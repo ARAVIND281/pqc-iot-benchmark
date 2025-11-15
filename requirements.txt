@@ -1,0 +1,29 @@
+# PQC IoT Benchmark - Dependencies
+# Install: pip install -r requirements.txt
+
+# Core scientific computing
+numpy>=1.24.0
+pandas>=2.0.0
+scipy>=1.11.0
+
+# Visualization
+matplotlib>=3.7.0
+seaborn>=0.12.0
+
+# Machine learning (for preprocessing)
+scikit-learn>=1.3.0
+
+# Statistical analysis
+statsmodels>=0.14.0
+
+# Post-Quantum Cryptography (optional - falls back to simulation if unavailable)
+# liboqs-python>=0.9.0
+
+# Progress tracking
+tqdm>=4.65.0
+
+# Testing
+pytest>=7.4.0
+
+# LaTeX compilation (system dependency - install via: brew install texlive)
+# Needed for IEEE paper compilation
