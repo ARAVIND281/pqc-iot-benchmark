@@ -468,6 +468,34 @@ def run_quick_test():
     return runner.results
 
 
+def run_full_benchmark() -> 'pd.DataFrame':
+    """
+    Run the full benchmark suite and return results as DataFrame.
+    
+    This is the main entry point for programmatic use (e.g., from run_pipeline.py).
+    
+    Returns:
+        pd.DataFrame: Benchmark results with all measurements
+    """
+    import pandas as pd
+    
+    print("\n" + "=" * 60)
+    print("PQC IoT Full Benchmark")
+    print("=" * 60)
+    
+    runner = BenchmarkRunner()
+    
+    # Run full benchmark
+    runner.run_all_benchmarks()
+    
+    # Save results
+    runner.save_results()
+    
+    # Return as DataFrame
+    df = pd.DataFrame(runner.results)
+    return df
+
+
 def main():
     """Main entry point for benchmark execution."""
     import argparse
