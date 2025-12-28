@@ -325,7 +325,7 @@ def run_topsis(
 
 
 def create_feasibility_matrix(
-    stats_df: pd.DataFrame
+    df: pd.DataFrame
 ) -> pd.DataFrame:
     """
     Create feasibility matrix (Algorithm x Device Class).
@@ -334,15 +334,24 @@ def create_feasibility_matrix(
     based on whether it meets device class constraints.
     
     Args:
-        stats_df: Summary statistics DataFrame
+        df: Cleaned benchmark data or summary stats DataFrame
         
     Returns:
         Feasibility matrix DataFrame
     """
     print("\nCreating feasibility matrix...")
     
-    # Prepare data
-    decision_matrix = prepare_decision_matrix(stats_df)
+    # Check if this is raw/cleaned data or summary stats
+    if 'metric' in df.columns and 'mean' in df.columns:
+        # It's summary stats - use prepare_decision_matrix
+        decision_matrix = prepare_decision_matrix(df)
+    else:
+        # It's raw/cleaned data - aggregate directly
+        decision_matrix = df.groupby(['algorithm', 'device_class']).agg({
+            'total_time_ms': 'mean',
+            'peak_memory_kb': 'mean',
+            'energy_mj': 'mean'
+        }).reset_index()
     
     # Device class constraints
     constraints = {

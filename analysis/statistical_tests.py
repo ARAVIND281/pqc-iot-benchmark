@@ -121,21 +121,29 @@ def run_tukey_hsd(
             alpha=SIGNIFICANCE_LEVEL
         )
         
-        # Convert to DataFrame
-        results_df = pd.DataFrame({
-            'group1': tukey_result.groupsunique[tukey_result.pairindices[:, 0]],
-            'group2': tukey_result.groupsunique[tukey_result.pairindices[:, 1]],
-            'meandiff': tukey_result.meandiffs,
-            'p_adj': tukey_result.pvalues,
-            'lower': tukey_result.confint[:, 0],
-            'upper': tukey_result.confint[:, 1],
-            'reject': tukey_result.reject
-        })
-        
-        results_df['metric'] = metric
-        results_df['group_col'] = group_col
-        
-        return results_df
+        # Convert to DataFrame - handle different statsmodels versions
+        try:
+            # Newer statsmodels version
+            summary_df = tukey_result.summary().as_html()
+            results_df = pd.DataFrame(data=tukey_result._results_table.data[1:],
+                                      columns=tukey_result._results_table.data[0])
+            results_df['metric'] = metric
+            results_df['group_col'] = group_col
+            return results_df
+        except:
+            # Alternative: use summary frame
+            results_df = pd.DataFrame({
+                'group1': [r[0] for r in tukey_result._results_table.data[1:]],
+                'group2': [r[1] for r in tukey_result._results_table.data[1:]],
+                'meandiff': [r[2] for r in tukey_result._results_table.data[1:]],
+                'p_adj': [r[3] for r in tukey_result._results_table.data[1:]],
+                'lower': [r[4] for r in tukey_result._results_table.data[1:]],
+                'upper': [r[5] for r in tukey_result._results_table.data[1:]],
+                'reject': [r[6] for r in tukey_result._results_table.data[1:]]
+            })
+            results_df['metric'] = metric
+            results_df['group_col'] = group_col
+            return results_df
         
     except Exception as e:
         print(f"  Warning: Tukey HSD failed for {metric}: {e}")

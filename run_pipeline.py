@@ -43,19 +43,28 @@ def print_step(step: str):
     print(f"\n>>> {step}")
 
 
-def run_benchmarks():
+def run_benchmarks(num_iterations: int = None):
     """Execute the benchmarking stage."""
     print_banner("STAGE 1: BENCHMARKING")
     
-    from benchmark_runner import run_full_benchmark
-    from config import RAW_BENCHMARKS_FILE
+    from benchmark_runner import BenchmarkRunner
+    from config import RAW_BENCHMARKS_FILE, NUM_ITERATIONS
+    import pandas as pd
     
-    print_step("Running benchmarks for all algorithm-device combinations...")
-    print("This may take 15-30 minutes depending on system performance.\n")
+    iterations = num_iterations if num_iterations else NUM_ITERATIONS
+    
+    print_step(f"Running benchmarks ({iterations} iterations per config)...")
+    print("This may take several minutes depending on system performance.\n")
     
     start_time = time.time()
-    df = run_full_benchmark()
+    
+    runner = BenchmarkRunner()
+    runner.run_all_benchmarks(num_iterations=iterations)
+    runner.save_results()
+    
     elapsed = time.time() - start_time
+    
+    df = pd.DataFrame(runner.results)
     
     print(f"\n✓ Benchmarking complete in {elapsed:.1f} seconds")
     print(f"  Output: {RAW_BENCHMARKS_FILE}")
@@ -68,23 +77,17 @@ def run_data_cleaning():
     """Execute the data cleaning stage."""
     print_banner("STAGE 2: DATA CLEANING")
     
-    from data_cleaning import clean_benchmark_data
+    from data_cleaning import clean_data
     from config import RAW_BENCHMARKS_FILE, CLEANED_BENCHMARKS_FILE
     import pandas as pd
     
-    print_step("Loading raw benchmark data...")
-    raw_df = pd.read_csv(RAW_BENCHMARKS_FILE)
-    print(f"  Loaded: {len(raw_df)} rows")
+    print_step("Running data cleaning pipeline...")
+    cleaned_df = clean_data(
+        input_file=RAW_BENCHMARKS_FILE,
+        output_file=CLEANED_BENCHMARKS_FILE
+    )
     
-    print_step("Removing warmup iterations and outliers...")
-    cleaned_df = clean_benchmark_data(raw_df)
-    
-    print_step("Saving cleaned data...")
-    cleaned_df.to_csv(CLEANED_BENCHMARKS_FILE, index=False)
-    
-    removed = len(raw_df) - len(cleaned_df)
     print(f"\n✓ Data cleaning complete")
-    print(f"  Removed: {removed} rows ({100*removed/len(raw_df):.1f}%)")
     print(f"  Output: {CLEANED_BENCHMARKS_FILE}")
     
     return cleaned_df
@@ -112,17 +115,13 @@ def run_analysis():
     stats_df.to_csv(SUMMARY_STATS_FILE, index=False)
     print(f"  Saved: {SUMMARY_STATS_FILE}")
     
-    # ANOVA
-    print_step("Running ANOVA tests...")
-    from statistical_tests import run_anova, run_tukey_hsd
-    anova_results = run_anova(df)
-    anova_results.to_csv(ANOVA_RESULTS_FILE, index=False)
+    # ANOVA and Tukey HSD
+    print_step("Running ANOVA and Tukey HSD tests...")
+    from statistical_tests import run_statistical_tests
+    anova_df, tukey_df = run_statistical_tests(df)
+    anova_df.to_csv(ANOVA_RESULTS_FILE, index=False)
     print(f"  Saved: {ANOVA_RESULTS_FILE}")
-    
-    # Tukey HSD
-    print_step("Running Tukey HSD post-hoc tests...")
-    tukey_results = run_tukey_hsd(df)
-    tukey_results.to_csv(TUKEY_RESULTS_FILE, index=False)
+    tukey_df.to_csv(TUKEY_RESULTS_FILE, index=False)
     print(f"  Saved: {TUKEY_RESULTS_FILE}")
     
     # Correlation Analysis
@@ -136,14 +135,8 @@ def run_analysis():
     print_step("Running TOPSIS multi-criteria analysis...")
     from topsis_ranking import run_topsis, create_feasibility_matrix
     
-    # Prepare data for TOPSIS
-    topsis_data = df.groupby(['algorithm', 'device_class']).agg({
-        'total_time_ms': 'mean',
-        'peak_memory_kb': 'mean',
-        'energy_mj': 'mean'
-    }).reset_index()
-    
-    topsis_results = run_topsis(topsis_data)
+    # Use summary statistics for TOPSIS (has metric column)
+    topsis_results = run_topsis(stats_df)
     topsis_results.to_csv(TOPSIS_RANKINGS_FILE, index=False)
     print(f"  Saved: {TOPSIS_RANKINGS_FILE}")
     
@@ -223,6 +216,10 @@ def main():
         '--compile-paper', action='store_true',
         help='Compile LaTeX paper'
     )
+    parser.add_argument(
+        '--iterations', type=int, default=None,
+        help='Number of iterations per config (default: 1000, use lower for testing)'
+    )
     
     args = parser.parse_args()
     
@@ -239,7 +236,7 @@ def main():
             if args.skip_benchmarks:
                 print("\n>>> Skipping benchmarks (using existing data)")
             else:
-                run_benchmarks()
+                run_benchmarks(args.iterations)
         
         # Stage 2: Data Cleaning
         if 'all' in stages or 'clean' in stages:
