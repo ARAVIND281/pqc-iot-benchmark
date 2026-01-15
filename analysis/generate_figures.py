@@ -408,7 +408,7 @@ def fig9_feasibility(data: Dict[str, pd.DataFrame]):
     
     # Map status to numeric for heatmap
     status_map = {'FEASIBLE': 2, 'MARGINAL': 1, 'INFEASIBLE': 0}
-    numeric_pivot = pivot.replace(status_map)
+    numeric_pivot = pivot.replace(status_map).astype(float)
     
     fig, ax = plt.subplots(figsize=(8, 10))
     

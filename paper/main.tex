@@ -345,6 +345,15 @@ Based on our analysis, we offer the following recommendations:
 
 \textbf{\sphincs{}} offers maximal security guarantees but imposes substantial performance penalties. We recommend \sphincs{} only for high-security applications on Class 2 devices where signing frequency is low.
 
+\subsection{Trade-off Analysis}
+
+\begin{itemize}
+    \item \textbf{Speed vs. Key Size}: Lattice-based algorithms provide computational efficiency but require substantial key storage. Conversely, hash-based signatures yield smaller keys at the expense of computational overhead.
+    \item \textbf{Memory vs. Security Level}: Elevating the security level (e.g., Level 1 to Level 5) typically doubles the memory footprint, highlighting the cost of future-proofing IoT devices.
+    \item \textbf{Energy vs. Signature Size}: \falcon{} generates exceptionally compact signatures, minimizing radio transmission energy, yet necessitates significant processor energy during key generation.
+    \item \textbf{Latency Asymmetry}: The asymmetric cost of operations (e.g., fast signing but slow verification, or vice versa) dictates the appropriate architectural placement of algorithms within IoT ecosystems.
+\end{itemize}
+
 \subsection{Limitations}
 
 Our study has several limitations:
