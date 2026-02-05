@@ -1,0 +1,65 @@
+%-----------------------------------------------------------------------
+\section*{Appendix D: Statistical Cleaning and TOPSIS Analytics Kernel}
+\label{app:topsis_code}
+%-----------------------------------------------------------------------
+
+To ensure the deterministic and unbiased execution parameters framing Section \ref{sec:discussion}, Algorithm \ref{alg:topsis_python} outlines the analytical pipeline enforcing rigid statistical multi-criteria constraints.
+
+\begin{algorithm*}[htbp]
+\caption{Unsupervised IQR Validation and Multi-Criteria Evaluation (Python 3)}\label{alg:topsis_python}
+\begin{algorithmic}[1]
+\State \texttt{import pandas as pd, numpy as np}
+\State
+\State \texttt{def remove\_outliers(df, columns, multiplier=1.5):}
+\State \indent \texttt{"""}
+\State \indent \texttt{Executes rigorous mathematical Interquartile Range assertions inherently preventing}
+\State \indent \texttt{stochastic kernel interruptions artificially skewing post-quantum latency clusters.}
+\State \indent \texttt{"""}
+\State \indent \texttt{mask = pd.Series(True, index=df.index)}
+\State \indent \texttt{for col in columns:}
+\State \indent \indent \texttt{col\_data = df[col].dropna()}
+\State \indent \indent \texttt{Q1 = col\_data.quantile(0.25)}
+\State \indent \indent \texttt{Q3 = col\_data.quantile(0.75)}
+\State \indent \indent \texttt{IQR = Q3 - Q1}
+\State \indent \indent \texttt{lower\_bound = Q1 - multiplier * IQR}
+\State \indent \indent \texttt{upper\_bound = Q3 + multiplier * IQR}
+\State \indent \indent \texttt{mask = mask \& ((df[col].isna()) | ((df[col] >= lower\_bound) \& (df[col] <= upper\_bound)))}
+\State \indent \texttt{return df[mask]}
+\State
+\State \texttt{def calculate\_topsis(decision\_matrix, weights, impacts):}
+\State \indent \texttt{"""}
+\State \indent \texttt{Executes objective multi-dimensional evaluations measuring Euclidean vector lengths}
+\State \indent \texttt{mapping Algorithm viability exactly between Theoretical Ideals ('+') and Anti-Ideals ('-').}
+\State \indent \texttt{"""}
+\State \indent \texttt{\# Array Type Validation}
+\State \indent \texttt{X = np.array(decision\_matrix, dtype=float)}
+\State \indent \texttt{weights = np.array(weights) / np.sum(weights)}
+\State
+\State \indent \texttt{\# Step 1: Normalize Matrix structurally preventing distinct unit mismatches}
+\State \indent \texttt{norm\_matrix = X / np.sqrt(np.sum(X**2, axis=0))}
+\State
+\State \indent \texttt{\# Step 2: Correlate Weight Multipliers}
+\State \indent \texttt{weighted\_matrix = norm\_matrix * weights}
+\State
+\State \indent \texttt{\# Step 3: Identify absolute Boolean Extremes (+/-)}
+\State \indent \texttt{ideal\_best = np.zeros(weighted\_matrix.shape[1])}
+\State \indent \texttt{ideal\_worst = np.zeros(weighted\_matrix.shape[1])}
+\State \indent \texttt{for j in range(weighted\_matrix.shape[1]):}
+\State \indent \indent \texttt{if impacts[j] == '+':} \Comment{Maximization parameter}
+\State \indent \indent \indent \texttt{ideal\_best[j] = np.max(weighted\_matrix[:, j])}
+\State \indent \indent \indent \texttt{ideal\_worst[j] = np.min(weighted\_matrix[:, j])}
+\State \indent \indent \texttt{else:} \Comment{Minimization parameter}
+\State \indent \indent \indent \texttt{ideal\_best[j] = np.min(weighted\_matrix[:, j])}
+\State \indent \indent \indent \texttt{ideal\_worst[j] = np.max(weighted\_matrix[:, j])}
+\State
+\State \indent \texttt{\# Step 4: Validate Scalar Distance Trajectories}
+\State \indent \texttt{D\_plus = np.sqrt(np.sum((weighted\_matrix - ideal\_best)**2, axis=1))}
+\State \indent \texttt{D\_minus = np.sqrt(np.sum((weighted\_matrix - ideal\_worst)**2, axis=1))}
+\State
+\State \indent \texttt{\# Step 5: Derive Optimal Selection Probability Output ($C\_i$)}
+\State \indent \texttt{C\_i = D\_minus / (D\_plus + D\_minus)}
+\State \indent \texttt{return C\_i, D\_plus, D\_minus}
+\end{algorithmic}
+\end{algorithm*}
+
+Embedding these validation constants globally standardizes benchmarking reproducibility significantly accelerating hardware cross-examinations identically globally across academia.

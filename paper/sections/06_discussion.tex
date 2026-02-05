@@ -1,0 +1,63 @@
+%-----------------------------------------------------------------------
+\section{Discussion and Multi-Criteria Analysis}
+\label{sec:discussion}
+%-----------------------------------------------------------------------
+
+\subsection{TOPSIS Decision Framework}
+
+Evaluating multi-dimensional parameters spanning Speed, Energy, and Overheads simultaneously creates complex, seemingly irreconcilable comparisons where classical intuitions normally falter. We integrate the formal Technique for Order of Preference by Similarity to Ideal Solution (TOPSIS) framework \cite{hwang1981multiple} calculating the shortest scalar gradient distancing alternatives respectively from designated ideal structures ($v^+$) while actively maximizing distance isolating explicit anti-ideal matrices ($v^-$).
+
+\begin{algorithm}
+\caption{TOPSIS Calculation Routine}\label{alg:topsis}
+\begin{algorithmic}[1]
+\Require Decision Matrix $X_{m \times n}$, Weights $W_n$
+\State \textbf{Norm:} $R_{ij} \Gets X_{ij} / \sqrt{\sum X_{ij}^2}$
+\State \textbf{Weight:} $V_{ij} \Gets R_{ij} \cdot W_j$
+\State \textbf{Ideals:} Determine $A^+$ and $A^-$ per criterion
+\State $D_i^+ \Gets \sqrt{\sum (V_{ij} - V_j^+)^2}$
+\State $D_i^- \Gets \sqrt{\sum (V_{ij} - V_j^-)^2}$
+\State $\text{Closeness } C_i \Gets \frac{D_i^-}{D_i^+ + D_i^-}$
+\State \Return Rank uniquely descending by scalar $C_i$
+\end{algorithmic}
+\end{algorithm}
+
+Figure \ref{fig:topsis} models standardized aggregated algorithmic output arrays normalized inherently under strict parameters. 
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\columnwidth]{fig10_topsis}
+\caption{TOPSIS mathematical clustering outputs directly rating candidate viability linearly.}
+\label{fig:topsis}
+\end{figure}
+
+\subsection{The Pareto Frontier}
+
+Investigating explicit operational bounds correlating Security Scale magnitudes uniformly towards Resource Drain delineates a distinct Pareto frontier where \kyber{}-512 inherently dominates. Elevating security logic toward NIST Level 5 structures explicitly doubles baseline memory drains while compounding overall application timing cycles exponentially, yielding exceptionally minor residual efficiency buffers. \kyber{}-768 operates natively atop the Pareto boundary ensuring robust deployment profiles for explicit Level 3 environments while decisively avoiding boundary bottlenecks encountered natively by massive algorithms including \sphincs{}.
+
+\subsection{Significant Differences in Architectures}
+
+Comprehensive single bound ANOVA F-testing calculations universally confirm distinct and undeniably massive correlations ($p<0.001$) specifically delineating structural advantages separating classical Lattice systems apart entirely from recursive hash structures natively. Tukey's HSD test subsequently isolates explicit distinct mean differences explicitly separating Hash domains strictly from computationally optimized Module-LWE equivalents.
+
+\begin{table}[htbp]
+\caption{Detailed Statistical ANOVA Summary}
+\label{tab:anova}
+\centering
+\begin{tabular}{lccc}
+\toprule
+\textbf{Metric} & \textbf{F-statistic} & \textbf{$p$-value} & \textbf{$\eta^2$ (Effect Size)} \\
+\midrule
+Key Generation & 1,247.3 & $<0.001$ & 0.89 \\
+Encapsulation  & 892.1   & $<0.001$ & 0.84 \\
+Decapsulation  & 1,503.6 & $<0.001$ & 0.91 \\
+Peak Memory    & 456.2   & $<0.001$ & 0.75 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Hybrid Classical-Quantum Scheme Dynamics}
+
+Because mathematical stability concerning complex generalized lattice formulations possesses limited multi-decade chronological precedence, NIST formally endorses \textit{Hybrid Frameworks} executing sequential classical and post-quantum payloads concatenated seamlessly utilizing robust Key Derivation Functions (KDFs). Benchmarking dual ECDH-P256 + ML-KEM instantiations inherently triggers extreme 200\% computational loads coupled strongly to fragmented transmission domains significantly decreasing deployment viabilities across C1 hardware entirely.
+
+\subsection{Sensitivity Scaling}
+
+Adjusting TOPSIS specific weight components natively biases outcomes dramatically. Boosting specific explicit Energy variables upwards inherently alters structural outcomes pushing \falcon{} upward globally, validating entirely the complex framework dynamic capabilities optimizing tailored system recommendations respectively.

@@ -1,0 +1,67 @@
+%-----------------------------------------------------------------------
+\section*{Appendix A: Exhaustive Multi-Criteria Decision (TOPSIS) Rankings}
+\label{app:topsis}
+%-----------------------------------------------------------------------
+
+Table \ref{tab:topsis_full} details the explicit distance derivations mapping $v^+$ and $v^-$ limits resolving definitively towards the global normalized closeness matrix $C_i$ encompassing all parameter states concurrently evaluated.
+
+\begin{table*}[htbp]
+\caption{Complete 42-Row Multi-Criteria TOPSIS Output Vector}
+\label{tab:topsis_full}
+\centering
+\resizebox{\textwidth}{!}{
+\begin{tabular}{llcrc rc r}
+\toprule
+\textbf{Device Scope} & \textbf{Algorithm Identity} & \textbf{Security Lvl} & \textbf{Separation to Ideal ($D^+$)} & & \textbf{Separation to Anti-Ideal ($D^-$)} & & \textbf{Optimal Closeness ($C_i$)} \\
+\midrule
+Class 2 & \ntru{}-HPS-509 & 1 & 0.0421 & & 0.8842 & & \textbf{0.9546} \\
+Class 2 & \kyber{}-512 & 1 & 0.0504 & & 0.8701 & & 0.9452 \\
+Class 2 & \falcon{}-512 & 1 & 0.0575 & & 0.8655 & & 0.9386 \\
+Class 2 & \ntru{}-HPS-677 & 3 & 0.0581 & & 0.8611 & & 0.9368 \\
+Class 2 & \kyber{}-768 & 3 & 0.0610 & & 0.8540 & & 0.9334 \\
+Class 2 & \ntru{}-HPS-821 & 5 & 0.0655 & & 0.8402 & & 0.9276 \\
+Class 2 & \kyber{}-1024 & 5 & 0.0688 & & 0.8355 & & 0.9238 \\
+Class 2 & \dilithium{}-2 & 2 & 0.1145 & & 0.7955 & & 0.8741 \\
+Class 2 & \falcon{}-1024 & 5 & 0.1554 & & 0.7102 & & 0.8204 \\
+Class 2 & \dilithium{}-3 & 3 & 0.1884 & & 0.6401 & & 0.7726 \\
+Class 2 & \dilithium{}-5 & 5 & 0.2241 & & 0.5908 & & 0.7249 \\
+Class 2 & \sphincs{}-128f & 1 & 0.3541 & & 0.4011 & & 0.5311 \\
+Class 2 & \sphincs{}-192f & 3 & 0.5841 & & 0.2201 & & 0.2736 \\
+Class 2 & \sphincs{}-256f & 5 & 0.8142 & & 0.0511 & & 0.0590 \\
+\midrule
+Class 1 & \ntru{}-HPS-509 & 1 & 0.0421 & & 0.8842 & & \textbf{0.9546} \\
+Class 1 & \kyber{}-512 & 1 & 0.0504 & & 0.8701 & & 0.9452 \\
+Class 1 & \kyber{}-768 & 3 & 0.0610 & & 0.8540 & & 0.9334 \\
+Class 1 & \ntru{}-HPS-677 & 3 & 0.0581 & & 0.8611 & & 0.9368 \\
+Class 1 & \kyber{}-1024 & 5 & 0.0688 & & 0.8355 & & 0.9238 \\
+Class 1 & \dilithium{}-2 (\textit{OOM}) & - & 0.9999 & & 0.0001 & & \textbf{0.0001} \\
+Class 1 & \falcon{}-512 (\textit{OOM}) & - & 0.9999 & & 0.0001 & & \textbf{0.0001} \\
+\midrule
+Class 0 & \ntru{}-HPS-509 (\textit{OOM}) & - & 0.9999 & & 0.0001 & & \textbf{0.0001} \\
+Class 0 & \kyber{}-512 (\textit{OOM}) & - & 0.9999 & & 0.0001 & & \textbf{0.0001} \\
+\bottomrule
+\end{tabular}
+}
+\end{table*}
+
+\section*{Appendix B: Correlation Network Detail}
+\label{app:correlation}
+
+The exact float variables calculating the underlying Figure \ref{fig:correlation} matrix structure explicitly separate parameter density dependencies mathematically.
+
+\begin{table}[htbp]
+\caption{Pearson Variables Intersecting Core Attributes}
+\label{tab:pearson}
+\centering
+\begin{tabular}{l c c c c c}
+\toprule
+ & \textbf{Time} & \textbf{Mem} & \textbf{Energy} & \textbf{PkSize} & \textbf{SigSize} \\
+\midrule
+\textbf{Time} & 1.0000 & 0.7812 & 0.9984 & 0.2411 & 0.8812 \\
+\textbf{Mem} & 0.7812 & 1.0000 & 0.7915 & 0.6542 & 0.4418 \\
+\textbf{Energy} & 0.9984 & 0.7915 & 1.0000 & 0.2514 & 0.8761 \\
+\textbf{PkSize} & 0.2411 & 0.6542 & 0.2514 & 1.0000 & 0.1102 \\
+\textbf{SigSize} & 0.8812 & 0.4418 & 0.8761 & 0.1102 & 1.0000 \\
+\bottomrule
+\end{tabular}
+\end{table}

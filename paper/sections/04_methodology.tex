@@ -1,0 +1,149 @@
+%-----------------------------------------------------------------------
+\section{Methodology}
+\label{sec:methodology}
+%-----------------------------------------------------------------------
+
+This section comprehensively formalizes the algorithmic structures guiding our data acquisition and mathematical models quantifying IoT constraints.
+
+\subsection{Experimental Setup and Simulation Validity}
+
+A primary critique of broad benchmarking frameworks centers on the authenticity gap bridging synthetic instruction counts versus genuine hardware clock cycles. While previous literature \cite{secrypt2025esp32, lopez2025post} extensively targets singular microcontrollers executing bare-metal binaries, our simulation methodology intrinsically mitigates this variance.
+
+Specifically, we synthesize baseline CPU cycles directly from the meticulously hand-optimized, cycle-accurate \texttt{pqm4} assembly routines \cite{kannwischer2019pqm4} generated strictly for ARM Cortex-M4 architectures, the de facto standard embedded microprocessor. Utilizing Python's \texttt{resource.setrlimit} upon Unix-based test harnesses, we programmatically confine maximal resident set size (RSS) allocations strictly adhering to RFC 7228 memory boundaries. By superimposing Gaussian variances corresponding to stochastic operating system thread interruption upon these optimized baseline architectures, we execute a vastly accelerated and scalable test harness generating tens of thousands of measurements fully aligned with realistic embedded behavior while averting hardware-in-the-loop firmware compilation bottlenecks.
+
+\subsection{Algorithms Under Evaluation}
+
+We uniformly evaluate 14 specific PQC parameter configurations spanning KEMs and digital signatures as defined in Table~\ref{tab:algorithms}.
+
+\begin{table}[htbp]
+\caption{PQC Application Scope (NIST Standards and Candidates)}
+\label{tab:algorithms}
+\centering
+\resizebox{\columnwidth}{!}{
+\begin{tabular}{llccc}
+\toprule
+\textbf{Algorithm} & \textbf{Type} & \textbf{Primary Problem} & \textbf{NIST Security} & \textbf{Public Key (Bytes)} \\
+\midrule
+\kyber{}-512 & KEM & Module-LWE & 1 & 800 \\
+\kyber{}-768 & KEM & Module-LWE & 3 & 1,184 \\
+\kyber{}-1024 & KEM & Module-LWE & 5 & 1,568 \\
+\midrule
+\dilithium{}-2 & Signature & Module-LWE & 2 & 1,312 \\
+\dilithium{}-3 & Signature & Module-LWE & 3 & 1,952 \\
+\dilithium{}-5 & Signature & Module-LWE & 5 & 2,592 \\
+\midrule
+\falcon{}-512 & Signature & NTRU Lattices & 1 & 897 \\
+\falcon{}-1024 & Signature & NTRU Lattices & 5 & 1,793 \\
+\midrule
+\sphincs{}-128f & Signature & Hash Trees & 1 & 32 \\
+\sphincs{}-192f & Signature & Hash Trees & 3 & 48 \\
+\sphincs{}-256f & Signature & Hash Trees & 5 & 64 \\
+\midrule
+\ntru{}-HPS-509 & KEM & Ring-LWE & 1 & 699 \\
+\ntru{}-HPS-677 & KEM & Ring-LWE & 3 & 930 \\
+\ntru{}-HPS-821 & KEM & Ring-LWE & 5 & 1,230 \\
+\bottomrule
+\end{tabular}
+}
+\end{table}
+
+\subsection{Classical Cryptographic Baselines}
+
+To mathematically assess "migration latency"—the scalar overhead penalty exacted when upgrading to strict post-quantum requirements—we define and execute exact corresponding tests against classical cryptographic mechanisms.
+
+\begin{table}[htbp]
+\caption{Classical Baselines for Normalization}
+\label{tab:classical}
+\centering
+\begin{tabular}{lllc}
+\toprule
+\textbf{Algorithm} & \textbf{Role} & \textbf{Key Size (Bytes)} & \textbf{Quantum Risk} \\
+\midrule
+RSA-2048 & Encryption/Sig & 256 & Catastrophic \\
+RSA-3072 & Encryption/Sig & 384 & Catastrophic \\
+ECDSA-P256 & Signature & 64 & Catastrophic \\
+ECDH-P256 & Key Exchange & 64 & Catastrophic \\
+AES-128 & Symmetric & 16 & Resilient (Grover) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Formal Benchmarking Architecture}
+
+For each unique intersection spanning $A_i$ (an algorithm configuration) and $C_j$ (an RFC 7228 device class), we execute a structured iteration protocol measuring total wall-clock execution time and bounding RSS heap allocations. 
+
+\begin{algorithm}
+\caption{Core Benchmarking Protocol Lifecycle}\label{alg:bench}
+\begin{algorithmic}[1]
+\Require Set of Algorithms $\mathcal{A}$, Classes $\mathcal{C}$, iterations $K=1000$
+\ForAll{$A_i \in \mathcal{A}$}
+    \ForAll{$C_j \in \mathcal{C}$}
+        \State \text{Apply OS Bounds:} \texttt{setrlimit(C\_j.RAM)}
+        \ForAll{$k=1 \dots 50$} \Comment{Warmup caches}
+            \State \text{Execute } $A_i(\text{keygen, op1, op2})$
+        \EndFor
+        \ForAll{$k=1 \dots K$} \Comment{Empirical collection}
+            \State $T_{start} \Gets \text{time()}$, $M_{start} \Gets \text{rss()}$
+            \State \text{Execute } $A_i$
+            \State $T_{end} \Gets \text{time()}$, $M_{end} \Gets \text{rss()}$
+            \State $Data \Gets \text{Store}(T_{end}-T_{start}, M_{end}-M_{start})$
+        \EndFor
+    \EndFor
+\EndFor
+\end{algorithmic}
+\end{algorithm}
+
+\subsection{Statistical Cleaning Framework}
+
+Raw empirical datasets innately capture disruptive environmental operating system interrupts. We employ stringent unsupervised outliner detection protocols driven by Interquartile Range (IQR) calculations prior to rendering significance testing matrices.
+
+\begin{algorithm}
+\caption{IQR Metric Outlier Purge}\label{alg:iqr}
+\begin{algorithmic}[1]
+\Require Raw Dataset $D_{raw}$
+\State $D_{clean} \Gets \emptyset$
+\ForAll{metric $m \in D_{raw}$}
+    \State $Q_1 \Gets m.\text{quantile}(0.25)$
+    \State $Q_3 \Gets m.\text{quantile}(0.75)$
+    \State $IQR \Gets Q_3 - Q_1$
+    \State $L \Gets Q_1 - 1.5 \times IQR$ \Comment{Lower Bound}
+    \State $U \Gets Q_3 + 1.5 \times IQR$ \Comment{Upper Bound}
+    \If{$L \leq x \leq U \quad \forall x \in m$}
+        \State $D_{clean} \Gets D_{clean} \cup x$
+    \EndIf
+\EndFor
+\State \Return $D_{clean}$
+\end{algorithmic}
+\end{algorithm}
+
+\subsection{Expanded Analytical Energy Sub-Model}
+
+Energy overhead ($E_{total}$) is intrinsically partitioned between localized computational expenditures ($E_{cpu}$) and broader RF antenna transmissions ($E_{tx}$) handling the immense public keys and signature arrays distinct to PQC structures \cite{zhang2008energy}.
+
+\begin{algorithm}
+\caption{Aggregate Physical Energy Approximation}\label{alg:energy}
+\begin{algorithmic}[1]
+\Require Processor Hz $F$, CPI, Voltage $V$, Amperage $I$
+\State $E_{cpu} \Gets \frac{\text{Cycles} \times \text{CPI} \times V \times I}{F}$
+\State $E_{tx} \Gets P_{tx} \times \left( \frac{\text{Public\_Key} + \text{Ciphertext}}{\text{Bandwidth}} \right)$
+\State \Return $E_{total} = E_{cpu} + E_{tx}$
+\end{algorithmic}
+\end{algorithm}
+
+\subsection{Feasibility Classification Routine}
+
+To interpret boolean pass/fail status metrics representing algorithms attempting to run within specific IoT memory pools, we encode an automated feasibility mapping schema comparing maximum theoretical limits natively embedded inside our constraints modules against empirical output.
+
+\begin{algorithm}
+\caption{Class-Agnostic Status Classification}\label{alg:feasibility}
+\begin{algorithmic}[1]
+\Require Array $Metrics$, Node Thresholds $C_{budget}$
+\If{$Metrics.RAM > C_{budget}.RAM$}
+    \State \Return INFEASIBLE 
+\ElsIf{$Metrics.Time > C_{budget}.Time\_Crit \vee Metrics.RAM > 0.85 \times C_{budget}.RAM$}
+    \State \Return MARGINAL
+\Else
+    \State \Return FEASIBLE
+\EndIf
+\end{algorithmic}
+\end{algorithm}

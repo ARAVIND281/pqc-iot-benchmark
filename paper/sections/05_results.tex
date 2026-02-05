@@ -1,0 +1,52 @@
+%-----------------------------------------------------------------------
+\section{Empirical Results}
+\label{sec:results}
+%-----------------------------------------------------------------------
+
+\subsection{Latency and Execution Time Analysis}
+
+Figure \ref{fig:keygen_time} outlines absolute execution times across primary key generation bounds. Across non-constrained parameters, classical baselines like ECDH-P256 complete full exchanges significantly under 2ms. During PQC migration, \kyber{}-512 universally dominates across all lattice KEM mechanisms, resolving comprehensively sub-10ms globally. Predictably, \falcon{} executes exceptionally fast verifications yet triggers catastrophic latency barriers internally during generation algorithms owing firmly to complex Fourier bounds unsupported inherently on Cortex-M0 microarchitectures without specialized Floating-Point Units (FPUs). 
+
+\textbf{\sphincs{}} executes as a significant temporal outlier entirely due to thousands of recursive sequential SHA-3 loops. While retaining maximal mathematical conservatism, SLH-DSA key generation times aggressively skew metrics off logarithmic scales within IoT C0 frameworks. 
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\columnwidth]{fig2_keygen_time}
+\caption{Key generation latency plotted logarithmically across simulated architecture groupings. Classical counterparts map consistently closer to zero bounds.}
+\label{fig:keygen_time}
+\end{figure}
+
+\subsection{Memory Footprint and Scaling Penalty}
+
+Figure \ref{fig:memory} illustrates peak resident memory footprint distribution. A dominant finding isolating "The Class 0 Problem" asserts that Class 0 architecture ($\approx 10$ KB) inherently cannot support \textit{any} existing NIST PQC primitive directly on-chip without overflowing standard program stacks natively triggering hardware fault assertions.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\columnwidth]{fig5_memory}
+\caption{Peak memory utilization limits measured iteratively against strict hardware allocations.}
+\label{fig:memory}
+\end{figure}
+
+\subsection{Communication Overhead Analysis}
+
+Unlike classical ECDSA configurations transmitting a meager 64 bytes over RF interfaces, \dilithium{}-3 forces IoT communication busses to manage multiple multi-kilobyte transmissions across fragmented TCP packets.
+
+\begin{itemize}
+    \item \textbf{High Payload Cost:} SLH-DSA produces exceptionally large 17 KB ~ 49 KB signatures, triggering massive DTLS packet fragmentations and subsequent datagram dropping. 
+    \item \textbf{\falcon{} Efficiency:} Falcon universally outshines competing mechanisms natively when plotting transmission overhead due to generating impressively dense 666-byte signatures. This drastically reduces radio latency albeit demanding heavily on initialization processor stacks.
+\end{itemize}
+
+\subsection{Energy Breakdown Assessment}
+
+Correlating Algorithm \ref{alg:energy} calculations yields Figure \ref{fig:energy}. \kyber{}-512 requires significantly less energy ($\approx 4$ mJ on generic C2 bounds) compared to classical mechanisms entirely due to extremely rapid clock-cycle decay minimizing active CPU states. Consequently, LWE KEM mechanisms actually inherently increase embedded battery chronologies when explicitly assuming radio frequency operations (RF tx/rx phases) execute with sufficiently optimized payloads.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\columnwidth]{fig12_energy}
+\caption{Comprehensive cumulative algorithmic energy expenditures correlated uniformly across target hardware variants.}
+\label{fig:energy}
+\end{figure}
+
+\subsection{TLS 1.3 Handshake Overheads}
+
+Mapping our derived bounds strictly into the modernized TLS 1.3 sequence geometry \cite{campagna2020tls}, total end-to-end negotiated latency bounds aggressively expand simply processing CertificateVerify sequences padded with full lattice signatures natively transmitted over generic constrained wireless pathways. End-to-end TLS execution bounds realistically skyrocket by factors averaging $\approx 15-25x$ broadly across C1 endpoints exclusively handling fragmented \dilithium{}-2 handshake arrays.

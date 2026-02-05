@@ -1,0 +1,100 @@
+%-----------------------------------------------------------------------
+\section*{Appendix C: Core Simulation Kernel Open-Source Listings}
+\label{app:code_snippets}
+%-----------------------------------------------------------------------
+
+To guarantee strict scientific reproducibility and validate our methodological assertions regarding deterministic OS-level heap isolations simulating RFC 7228 boundaries, we directly open-source the underlying simulation kernels executing the statistical evaluations.
+
+\subsection{Unix Constraint Isolation Wrapper (Python)}
+
+Algorithm \ref{alg:cgroup_sim} defines the strictly controlled boundary wrapper enforcing hardware limits utilizing Python's native POSIX resource daemon natively.
+
+\begin{algorithm*}[htbp]
+\caption{Deterministic C-Group Based Memory/Time Isolation Mapping (Python 3)}\label{alg:cgroup_sim}
+\begin{algorithmic}[1]
+\State \texttt{import resource, subprocess, time}
+\State
+\State \texttt{def benchmark\_pqc\_algorithm(binary\_path, hardware\_class):}
+\State \indent \texttt{"""}
+\State \indent \texttt{Isolates PQC execution matching RFC 7228 embedded boundaries.}
+\State \indent \texttt{"""}
+\State \indent \texttt{\# Define strictly isolated memory bounds (bytes)}
+\State \indent \texttt{bounds = \{}
+\State \indent \indent \texttt{"C0": 10 * 1024,} \Comment{Class 0: 10 KB Limit}
+\State \indent \indent \texttt{"C1": 50 * 1024,} \Comment{Class 1: 50 KB Limit}
+\State \indent \indent \texttt{"C2": 250 * 1024} \Comment{Class 2: 250 KB Limit}
+\State \indent \texttt{\}}
+\State
+\State \indent \texttt{target\_memory = bounds.get(hardware\_class, 250 * 1024)}
+\State
+\State \indent \texttt{def apply\_cgroup\_limits():}
+\State \indent \indent \texttt{"""Pre-execution hook applied explicitly to the child OS process."""}
+\State \indent \indent \texttt{try:}
+\State \indent \indent \indent \texttt{resource.setrlimit(resource.RLIMIT\_AS, (target\_memory, target\_memory))}
+\State \indent \indent \indent \texttt{resource.setrlimit(resource.RLIMIT\_DATA, (target\_memory, target\_memory))}
+\State \indent \indent \texttt{except ValueError as e:}
+\State \indent \indent \indent \texttt{print(f"KERNEL\_ERR: Failed boundary setup: \{e\}")}
+\State
+\State \indent \texttt{\# Execute payload synchronously, capturing temporal bounds}
+\State \indent \texttt{start\_time = time.perf\_counter\_ns()}
+\State \indent \texttt{try:}
+\State \indent \indent \texttt{process = subprocess.run(}
+\State \indent \indent \indent \texttt{[binary\_path],}
+\State \indent \indent \indent \texttt{preexec\_fn=apply\_cgroup\_limits,}
+\State \indent \indent \indent \texttt{capture\_output=True,}
+\State \indent \indent \indent \texttt{timeout=5.0} \Comment{Hard 5-second execution SLA bound}
+\State \indent \indent \texttt{)}
+\State \indent \indent \texttt{if process.returncode != 0:}
+\State \indent \indent \indent \texttt{return "ERR\_OOM"} \Comment{OOM/Segfault generated}
+\State \indent \texttt{except subprocess.TimeoutExpired:}
+\State \indent \indent \texttt{return "ERR\_LATENCY"}
+\State
+\State \indent \texttt{end\_time = time.perf\_counter\_ns()}
+\State \indent \texttt{elapsed\_ms = (end\_time - start\_time) / 1000000.0}
+\State
+\State \indent \texttt{\# Calculate residual physical peak memory utilization}
+\State \indent \texttt{rusage = resource.getrusage(resource.RUSAGE\_CHILDREN)}
+\State \indent \texttt{peak\_mem\_kb = rusage.ru\_maxrss / 1024.0}
+\State
+\State \indent \texttt{return \{"latency": elapsed\_ms, "memory": peak\_mem\_kb\}}
+\end{algorithmic}
+\end{algorithm*}
+
+\subsection{Energy Approximation Mathematical Model}
+
+The energy approximation engine evaluates physical bounds directly transforming abstract instruction counts into distinct Joule drainage signatures.
+
+\begin{algorithm*}[htbp]
+\caption{Dynamic CPU + RF Transmission Total Energy Approximation}\label{alg:energy_model}
+\begin{algorithmic}[1]
+\State \texttt{def calculate\_total\_energy(latency\_ms, algo\_config, device\_profile):}
+\State \indent \texttt{"""}
+\State \indent \texttt{Calculates generic total Physical Energy (mJ) combining local calculations}
+\State \indent \texttt{against RF transmission packet sizes natively.}
+\State \indent \texttt{"""}
+\State
+\State \indent \texttt{\# CPU Architectural Attributes (e.g., ARM Cortex-M4)}
+\State \indent \texttt{voltage = device\_profile["operational\_voltage\_v"]}
+\State \indent \texttt{active\_current = device\_profile["active\_amperage\_ma"]}
+\State
+\State \indent \texttt{\# 1. Local execution drain equivalent}
+\State \indent \texttt{time\_seconds = latency\_ms / 1000.0}
+\State \indent \texttt{cpu\_energy\_mj = voltage * active\_current * time\_seconds * 1000.0}
+\State
+\State \indent \texttt{\# 2. RF Transmission Baseline (e.g., IEEE 802.15.4 at 250kbps)}
+\State \indent \texttt{\# Assuming roughly 20mW active transmission power consumption linearly}
+\State \indent \texttt{tx\_power\_mw = 20.0}
+\State \indent \texttt{link\_bitrate\_bps = 250000.0}
+\State
+\State \indent \texttt{payload\_bytes = algo\_config["public\_key\_bytes"] + algo\_config["signature\_bytes"]}
+\State \indent \texttt{transmission\_time\_seconds = (payload\_bytes * 8.0) / link\_bitrate\_bps}
+\State \indent \texttt{tx\_energy\_mj = tx\_power\_mw * transmission\_time\_seconds}
+\State
+\State \indent \texttt{\# 3. Overall Consumption Calculation}
+\State \indent \texttt{total\_energy = cpu\_energy\_mj + tx\_energy\_mj}
+\State
+\State \indent \texttt{return total\_energy}
+\end{algorithmic}
+\end{algorithm*}
+
+These explicit architectural implementations uniquely grant hardware engineers exact parameters resolving cryptographic latency thresholds inherently confronting embedded deployments.

@@ -1,0 +1,40 @@
+%-----------------------------------------------------------------------
+\section{Background and Mathematical Foundations}
+\label{sec:background}
+%-----------------------------------------------------------------------
+
+To comprehend the distinct performance divergences intrinsic to post-quantum encryption and authentication, we survey the core mathematical assumptions underpinning the NIST algorithm portfolio.
+
+\subsection{Mathematical Foundations of PQC}
+
+\subsubsection{Lattice-Based Cryptography (LWE and Module-LWE)}
+The security of lattice-based mechanisms anchors on the Learning With Errors (LWE) and its algebraic variant, Module-LWE (MLWE) \cite{regev2009lattices}. The fundamental premise asserts that solving a system of linear equations becomes computationally intractable---even for quantum adversaries---when random error vectors are injected. 
+
+Given a public matrix $\mathbf{A} \in \mathbb{Z}_q^{k \times k}$ and a secret vector $\mathbf{s}$, an adversary is challenged to determine $\mathbf{s}$ given $\mathbf{t} = \mathbf{A}\mathbf{s} + \mathbf{e} \pmod q$, where $\mathbf{e}$ is a small error polynomial. The Module-LWE construct utilized in \textbf{\kyber{} (ML-KEM)} \cite{bos2018crystals} and \textbf{\dilithium{} (ML-DSA)} \cite{ducas2018crystals} manipulates vectors of polynomials within the ring $\mathbb{Z}_q[X]/(X^n+1)$, substantially dramatically reducing key sizes compared to standard LWE while facilitating highly optimized polynomial multiplications via the Number Theoretic Transform (NTT).
+
+\subsubsection{NTRU Lattices}
+While ML-KEM superseded \textbf{\ntru{}} \cite{hoffstein1998ntru} in the standardization pool, NTRU remains a crucial benchmarking pivot due to its prolonged cryptographic maturity and differing structural approach. Unlike MLWE which explicitly adds an error term, NTRU operates directly through convolution products within a truncated polynomial ring $\mathbb{R} = \mathbb{Z}[x]/(x^N-1)$. Security is derived from the difficulty of finding exceptionally short vectors spanning an ideal lattice.
+
+\subsubsection{Hash-Based Signatures}
+Hash-based algorithms, such as \textbf{\sphincs{} (SLH-DSA)} \cite{bernstein2019sphincs}, secure digital signatures strictly upon the universally proven properties of cryptographic hash functions (e.g., collision-resistance and one-wayness via SHA-3 or Haraka), completely circumventing sophisticated algebraic structures. SLH-DSA constructs massive hyper-trees combining Few-Time Signatures (FORS) and eXtended Merkle Signature Schemes (XMSS). While mathematically conservative and highly secure against hypothetical cryptanalysis attacks on lattices, the traversal and verification overhead of calculating thousands of tree paths inherently trigger extreme computational and transmission (signature size) latencies detrimental to IoT functionality.
+
+\subsubsection{Code-Based Cryptography}
+Error-correcting code algorithms such as \textbf{\hqc{}} \cite{nist2025hqc} derive security from the syndrome decoding problem. While primarily selected by NIST as a lattice alternative in March 2025, code-based schemes feature notably wide public keys rendering network fragmentation a primary constraint focus.
+
+\subsection{Defined Deployment Targets: RFC 7228}
+
+To maintain rigid boundaries reflective of genuine embedded hardware, we evaluate using the strict taxonomy formalized by the IETF's RFC 7228 \cite{bormann2014coap}:
+
+\begin{itemize}
+    \item \textbf{Class 0 (C0):} Devices exhibiting $<10$ KB RAM and $<100$ KB Flash storage. Commonly bare-metal sensory motes devoid of standard TCP/IP networking, necessitating proxy gateways.
+    \item \textbf{Class 1 (C1):} Devices exhibiting $\approx 10-50$ KB RAM and $\approx 100-250$ KB Flash. Suitable for lightweight Datagram TLS (DTLS) and UDP implementations (e.g., nRF52840 nodes).
+    \item \textbf{Class 2 (C2):} Devices exhibiting $\approx 50-250$ KB RAM and $\approx 250$ KB - 1 MB Flash. Readily capable of implementing nearly full TCP/IPv6 stacks (e.g., robust ESP32 environments).
+\end{itemize}
+
+\subsection{Related Work}
+
+Over recent years, embedded PQC benchmarking has expanded. The pivotal \textbf{pqm4 project} \cite{kannwischer2019pqm4} successfully ported highly optimized ARM Cortex-M4 assembly targets to the cryptographic community, serving as the definitive baseline instruction set reference.
+
+More recently, \textbf{Fitzgibbon and Ottaviani (2024)} \cite{fitzgibbon2024benchmarking} extended multi-platform evaluations across Raspberry Pi micro-architectures, definitively concluding that while KEM deployments are feasible, generic digital signature scaling remains catastrophic for memory pools. Concurrently, \textbf{Lopez et al. (2025)} \cite{lopez2025post} profiled PQC primitives against active WiFi configurations, isolating garbage collection degradation occurring exclusively during concurrent radio activation. At SECRYPT 2025, \textbf{Silva et al.} \cite{secrypt2025esp32} conducted deeply compartmentalized tests strictly upon the immensely popular ESP32 SoC targeting FreeRTOS environments, explicitly observing the physical limitations of hardware acceleration absences impacting FALCON FFT floating-point sampling bounds. Furthermore, \textbf{Demir et al. (2025)} \cite{demir2025power} conducted advanced power trace correlations demonstrating that naive constant-time modifications dramatically escalate power consumption.
+
+Despite these vital benchmarks forming subsets of the problem geometry, literature is noticeably devoid of unified Class-spanning data grids explicitly identifying the precise feasibility cutoff thresholds for the aggregate suite of algorithms, particularly when normalized under multi-attribute penalty considerations like TOPSIS.

@@ -169,26 +169,25 @@ def compile_paper():
     
     print_step("Compiling LaTeX paper...")
     
-    # Run pdflatex twice for references
+    # Run pdflatex first
+    subprocess.run(
+        ['pdflatex', '-interaction=nonstopmode', 'main.tex'],
+        cwd=paper_dir,
+        capture_output=True
+    )
+    
+    # Run bibtex
+    subprocess.run(['bibtex', 'main'], cwd=paper_dir, capture_output=True)
+    
+    # Run pdflatex twice more to resolve references
     for i in range(2):
         result = subprocess.run(
             ['pdflatex', '-interaction=nonstopmode', 'main.tex'],
             cwd=paper_dir,
             capture_output=True
         )
-        
         if result.returncode != 0:
-            print(f"Warning: pdflatex pass {i+1} returned non-zero")
-    
-    # Run bibtex
-    subprocess.run(['bibtex', 'main'], cwd=paper_dir, capture_output=True)
-    
-    # Run pdflatex again
-    subprocess.run(
-        ['pdflatex', '-interaction=nonstopmode', 'main.tex'],
-        cwd=paper_dir,
-        capture_output=True
-    )
+            print(f"Warning: pdflatex pass {i+2} returned non-zero")
     
     pdf_path = paper_dir / 'main.pdf'
     if pdf_path.exists():

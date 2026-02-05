@@ -580,8 +580,55 @@ def fig12_energy(data: Dict[str, pd.DataFrame]):
     print("✓ Generated: fig12_energy.png")
 
 
+def fig13_cdf(data: Dict[str, pd.DataFrame]):
+    if 'cleaned' not in data: return
+    df = data['cleaned']
+    fig, ax = plt.subplots(figsize=(10, 6))
+    colors = plt.cm.tab20(np.linspace(0, 1, len(df['algorithm'].unique())))
+    for i, algo in enumerate(df['algorithm'].unique()):
+        subset = df[df['algorithm'] == algo]['total_time_ms'].dropna()
+        if len(subset) == 0: continue
+        sorted_data = np.sort(subset)
+        yvals = np.arange(len(sorted_data))/float(len(sorted_data)-1)
+        ax.plot(sorted_data, yvals, label=algo, color=colors[i], linewidth=2)
+    ax.set_xscale('log')
+    ax.set_xlabel('Total Execution Time (ms)', fontsize=12)
+    ax.set_ylabel('Cumulative Probability', fontsize=12)
+    ax.set_title('Figure 13: CDF of Execution Times', fontsize=14)
+    ax.legend(bbox_to_anchor=(1.05, 1), loc='upper left', fontsize=8)
+    plt.tight_layout()
+    plt.savefig(FIGURES_DIR / 'fig13_cdf.png', dpi=300, bbox_inches='tight')
+    plt.close()
+    print("✓ Generated: fig13_cdf.png")
+
+def fig14_pareto(data: Dict[str, pd.DataFrame]):
+    if 'cleaned' not in data: return
+    df = data['cleaned'].copy()
+    fig, ax = plt.subplots(figsize=(10, 6))
+    
+    # Calculate means per algorithm and device class
+    grouped = df.groupby(['algorithm', 'device_class', 'security_level'])[['total_time_ms', 'peak_memory_kb', 'energy_mj']].mean().reset_index()
+    grouped['resource_cost'] = grouped['total_time_ms'] * grouped['peak_memory_kb'] * grouped['energy_mj']
+    
+    colors = DEVICE_CLASS_COLORS
+    for dc in grouped['device_class'].unique():
+        subset = grouped[grouped['device_class'] == dc]
+        ax.scatter(subset['security_level'], subset['resource_cost'], label=dc, color=colors.get(dc, 'blue'), s=100, alpha=0.7)
+        for _, row in subset.iterrows():
+            ax.annotate(row['algorithm'], (row['security_level'], row['resource_cost']), xytext=(5, 5), textcoords='offset points', fontsize=8)
+    
+    ax.set_yscale('log')
+    ax.set_xlabel('NIST Security Level', fontsize=12)
+    ax.set_ylabel('Resource Drain Cost (Log)', fontsize=12)
+    ax.set_title('Figure 14: Pareto Frontier (Resource Cost vs Security)', fontsize=14)
+    ax.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
+    plt.tight_layout()
+    plt.savefig(FIGURES_DIR / 'fig14_pareto.png', dpi=300, bbox_inches='tight')
+    plt.close()
+    print("✓ Generated: fig14_pareto.png")
+
 def generate_all_figures():
-    """Generate all 12 figures."""
+    """Generate all 14 figures."""
     print("=" * 60)
     print("GENERATING ALL FIGURES")
     print("=" * 60)
@@ -608,6 +655,8 @@ def generate_all_figures():
     fig10_topsis(data)
     fig11_tradeoff(data)
     fig12_energy(data)
+    fig13_cdf(data)
+    fig14_pareto(data)
     
     print("\n" + "=" * 60)
     print("FIGURE GENERATION COMPLETE")

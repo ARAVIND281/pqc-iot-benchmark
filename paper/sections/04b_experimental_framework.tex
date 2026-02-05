@@ -1,0 +1,17 @@
+%-----------------------------------------------------------------------
+\section{Extended Experimental and Methodological Architecture}
+\label{sec:extended_methodology}
+%-----------------------------------------------------------------------
+
+\subsection{System Architecture and Modeling Framework}
+
+The complexity of benchmarking multi-dimensional post-quantum structures uniformly across IoT deployment tiers fundamentally demands a tightly integrated measurement pipeline. Figure \ref{fig:framework} details the sequential isolation boundary methodology executed by our profiling daemon. 
+
+\begin{figure*}[htbp]
+\centering
+\includegraphics[width=0.85\textwidth]{fig1_framework}
+\caption{Comprehensive PQC Evaluation Testbed Framework. The architecture spans from bare-metal code execution strictly through OS-level kernel isolations ultimately concluding within high-level statistical modeling engines uniformly.}
+\label{fig:framework}
+\end{figure*}
+
+Our framework fundamentally enforces isolation. By utilizing \texttt{cgroups} and kernel-level \texttt{getrusage()} capabilities natively mapped against compiled GNU \texttt{liboqs} execution binaries, we deterministically sever standard POSIX dynamic linker overheads originating from adjacent OS services. This rigorous deterministic isolation exclusively enables the empirical translation mapping Python/C host execution time directly downward matching identical expected clock cycle bounds physically mandated internally by bare-metal ARM Cortex hardware.

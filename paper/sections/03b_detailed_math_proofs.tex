@@ -1,0 +1,40 @@
+%-----------------------------------------------------------------------
+\section{Extended Mathematical Proofs}
+\label{sec:math_proofs}
+%-----------------------------------------------------------------------
+
+To justify the aggressive processing bottlenecks measured in Section \ref{sec:results}, we must explicitly formalize the mathematical structures executed within the microcontroller ALUs.
+
+\subsection{Formalization of Module-LWE}
+
+The Learning With Errors (LWE) problem, introduced by Regev \cite{regev2009lattices}, underpins ML-KEM and ML-DSA safely reducing their security to the worst-case hardness of standard lattice problems like the Shortest Vector Problem (SVP). For IoT execution, the polynomial ring formulation (Module-LWE) is utilized to collapse physical storage parameters.
+
+Let $R$ define the ring of integers $\mathbb{Z}[X]/(X^n + 1)$, and $R_q = R / qR$ for prime $q \equiv 1 \pmod{2n}$.
+
+\textbf{Definition (Module-LWE Distribution):} For a secret vector $\mathbf{s} \in R_q^k$, a sample from the MLWE distribution $\mathcal{A}_{\mathbf{s},\chi}$ is obtained by choosing a uniformly random matrix $\mathbf{A} \leftarrow R_q^{k \times k}$, drawing an error vector $\mathbf{e} \leftarrow \chi^k$ from the centered binomial distribution $\chi$, and returning the tuple:
+\begin{equation}
+(\mathbf{A}, \mathbf{b} = \mathbf{A}\mathbf{s} + \mathbf{e} \bmod q)
+\end{equation}
+
+The Decisional MLWE problem challenges an adversary to distinguish between samples drawn natively from $\mathcal{A}_{\mathbf{s},\chi}$ versus samples drawn completely uniformly from $R_q^{k \times k} \times R_q^k$.
+
+\subsubsection{Algorithmic Complexity in Assembly}
+The matrix vector multiplication $\mathbf{A}\mathbf{s}$ dictates the execution ceiling. Naive convolution of two polynomials of degree $n-1$:
+\begin{equation}
+c(X) = a(X) \cdot b(X) \pmod{X^n+1}
+\end{equation}
+requires $\mathcal{O}(n^2)$ integer multiplications. To bypass this within Cortex-M4 units, the framework invokes the Number Theoretic Transform (NTT), operating via the principle:
+\begin{equation}
+c = \text{INTT}(\text{NTT}(a) \circ \text{NTT}(b))
+\end{equation}
+where $\circ$ is pointwise multiplication. The forward NTT evaluates a polynomial $a(X)$ at the $n$ primitive roots of unity modulo $q$. The Cooley-Tukey butterfly algorithm natively reduces this to $\mathcal{O}(n \log n)$. However, the Cortex-M0 (Class 0 architecture) fundamentally lacks the 32-bit fast multiply-accumulate (\texttt{MAC}) instructions required to rapidly execute the Barrett or Montgomery reductions necessary after every butterfly addition, explaining the profound latency divergence between C1 (Cortex-M0) and C2 (Cortex-M4) endpoints graphed dynamically in Figure \ref{fig:keygen_time}.
+
+\subsection{Formalization of Hash-Based Trees (SLH-DSA)}
+
+Unlike LWE, SLH-DSA secures natively upon generic collision-resistant cryptographic hashing boundaries. The algorithmic structure constructs a stateful signature tree defined by height $h = h' \cdot d$, containing $d$ interconnected levels.
+
+The core signature size penalty on the network fragment (often reaching 17-49 KB) is calculated mathematically as the sum of a Few-Time Signature (FORS) plus $d$ distinct Merkle paths.
+\begin{equation}
+|\sigma| \approx \text{len}(\text{FORS}) + d \cdot \left( \frac{h}{d} \right) \cdot n
+\end{equation}
+where $n$ represents the security parameter (e.g., $n=16$ bytes for Level 1). The IoT node must evaluate $2^{h/d}$ Winternitz One-Time Signatures (WOTS+) locally just to generate a single intermediate Merkle tree root. In constrained RAM ($<50$ KB), standard implementations cannot cache these intermediate hash states. Therefore, the algorithm is forced into a purely stateless configuration, recalculating equivalent hash boundaries continuously from the master seed. This $O(2^h)$ deterministic recalculation loop physically manifests as the 5,000+ millisecond threshold isolated dynamically during Class 1 benchmark executions.
