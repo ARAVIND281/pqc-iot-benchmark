@@ -7,7 +7,7 @@ To guarantee strict scientific reproducibility and validate our methodological a
 
 \subsection{Unix Constraint Isolation Wrapper (Python)}
 
-Algorithm \ref{alg:cgroup_sim} defines the strictly controlled boundary wrapper enforcing hardware limits utilizing Python's native POSIX resource daemon natively.
+Algorithm \ref{alg:cgroup_sim} defines the strictly controlled boundary wrapper enforcing hardware limits utilizing Python's native POSIX resource daemon .
 
 \begin{algorithm*}[htbp]
 \caption{Deterministic C-Group Based Memory/Time Isolation Mapping (Python 3)}\label{alg:cgroup_sim}
@@ -28,7 +28,7 @@ Algorithm \ref{alg:cgroup_sim} defines the strictly controlled boundary wrapper 
 \State \indent \texttt{target\_memory = bounds.get(hardware\_class, 250 * 1024)}
 \State
 \State \indent \texttt{def apply\_cgroup\_limits():}
-\State \indent \indent \texttt{"""Pre-execution hook applied explicitly to the child OS process."""}
+\State \indent \indent \texttt{"""Pre-execution hook applied to the child OS process."""}
 \State \indent \indent \texttt{try:}
 \State \indent \indent \indent \texttt{resource.setrlimit(resource.RLIMIT\_AS, (target\_memory, target\_memory))}
 \State \indent \indent \indent \texttt{resource.setrlimit(resource.RLIMIT\_DATA, (target\_memory, target\_memory))}
@@ -70,7 +70,7 @@ The energy approximation engine evaluates physical bounds directly transforming 
 \State \texttt{def calculate\_total\_energy(latency\_ms, algo\_config, device\_profile):}
 \State \indent \texttt{"""}
 \State \indent \texttt{Calculates generic total Physical Energy (mJ) combining local calculations}
-\State \indent \texttt{against RF transmission packet sizes natively.}
+\State \indent \texttt{against RF transmission packet sizes .}
 \State \indent \texttt{"""}
 \State
 \State \indent \texttt{\# CPU Architectural Attributes (e.g., ARM Cortex-M4)}
@@ -97,4 +97,4 @@ The energy approximation engine evaluates physical bounds directly transforming 
 \end{algorithmic}
 \end{algorithm*}
 
-These explicit architectural implementations uniquely grant hardware engineers exact parameters resolving cryptographic latency thresholds inherently confronting embedded deployments.
+These explicit architectural implementations uniquely grant hardware engineers exact parameters resolving cryptographic latency thresholds confronting embedded deployments.

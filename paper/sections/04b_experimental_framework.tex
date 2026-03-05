@@ -5,7 +5,7 @@
 
 \subsection{System Architecture and Modeling Framework}
 
-The complexity of benchmarking multi-dimensional post-quantum structures uniformly across IoT deployment tiers fundamentally demands a tightly integrated measurement pipeline. Figure \ref{fig:framework} details the sequential isolation boundary methodology executed by our profiling daemon. 
+The complexity of benchmarking multi-dimensional post-quantum structures uniformly across IoT deployment tiers demands a tightly integrated measurement pipeline. Figure \ref{fig:framework} details the sequential isolation boundary methodology executed by our profiling daemon. 
 
 \begin{figure*}[htbp]
 \centering
@@ -14,4 +14,4 @@ The complexity of benchmarking multi-dimensional post-quantum structures uniform
 \label{fig:framework}
 \end{figure*}
 
-Our framework fundamentally enforces isolation. By utilizing \texttt{cgroups} and kernel-level \texttt{getrusage()} capabilities natively mapped against compiled GNU \texttt{liboqs} execution binaries, we deterministically sever standard POSIX dynamic linker overheads originating from adjacent OS services. This rigorous deterministic isolation exclusively enables the empirical translation mapping Python/C host execution time directly downward matching identical expected clock cycle bounds physically mandated internally by bare-metal ARM Cortex hardware.
+Our framework enforces isolation. By utilizing \texttt{cgroups} and kernel-level \texttt{getrusage()} capabilities mapped against compiled GNU \texttt{liboqs} execution binaries, we sever standard POSIX dynamic linker overheads originating from adjacent OS services. This rigorous deterministic isolation exclusively enables the empirical translation mapping Python/C host execution time directly downward matching identical expected clock cycle bounds physically mandated internally by bare-metal ARM Cortex hardware.

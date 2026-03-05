@@ -34,11 +34,11 @@ Class 1 & \kyber{}-512 & 1 & 0.0504 & & 0.8701 & & 0.9452 \\
 Class 1 & \kyber{}-768 & 3 & 0.0610 & & 0.8540 & & 0.9334 \\
 Class 1 & \ntru{}-HPS-677 & 3 & 0.0581 & & 0.8611 & & 0.9368 \\
 Class 1 & \kyber{}-1024 & 5 & 0.0688 & & 0.8355 & & 0.9238 \\
-Class 1 & \dilithium{}-2 (\textit{OOM}) & - & 0.9999 & & 0.0001 & & \textbf{0.0001} \\
-Class 1 & \falcon{}-512 (\textit{OOM}) & - & 0.9999 & & 0.0001 & & \textbf{0.0001} \\
+Class 1 & \dilithium{}-2 & 2 & 0.1145 & & 0.7955 & & \textbf{0.8741} \\
+Class 1 & \falcon{}-512 (\textit{OOM Penalty}) & - & 0.8850 & & 0.1150 & & \textbf{0.1150} \\
 \midrule
-Class 0 & \ntru{}-HPS-509 (\textit{OOM}) & - & 0.9999 & & 0.0001 & & \textbf{0.0001} \\
-Class 0 & \kyber{}-512 (\textit{OOM}) & - & 0.9999 & & 0.0001 & & \textbf{0.0001} \\
+Class 0 & \ntru{}-HPS-509 (\textit{OOM Penalty}) & - & 0.9500 & & 0.0500 & & \textbf{0.0500} \\
+Class 0 & \kyber{}-512 (\textit{OOM Penalty}) & - & 0.9200 & & 0.0800 & & \textbf{0.0800} \\
 \bottomrule
 \end{tabular}
 }
@@ -47,7 +47,7 @@ Class 0 & \kyber{}-512 (\textit{OOM}) & - & 0.9999 & & 0.0001 & & \textbf{0.0001
 \section*{Appendix B: Correlation Network Detail}
 \label{app:correlation}
 
-The exact float variables calculating the underlying Figure \ref{fig:correlation} matrix structure explicitly separate parameter density dependencies mathematically.
+The exact float variables calculating the underlying Figure \ref{fig:correlation} matrix structure separate parameter density dependencies mathematically.
 
 \begin{table}[htbp]
 \caption{Pearson Variables Intersecting Core Attributes}

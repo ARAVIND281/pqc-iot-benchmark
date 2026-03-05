@@ -3,7 +3,7 @@
 \label{sec:math_proofs}
 %-----------------------------------------------------------------------
 
-To justify the aggressive processing bottlenecks measured in Section \ref{sec:results}, we must explicitly formalize the mathematical structures executed within the microcontroller ALUs.
+To justify the aggressive processing bottlenecks measured in Section \ref{sec:results}, we must formalize the mathematical structures executed within the microcontroller ALUs.
 
 \subsection{Formalization of Module-LWE}
 
@@ -16,7 +16,7 @@ Let $R$ define the ring of integers $\mathbb{Z}[X]/(X^n + 1)$, and $R_q = R / qR
 (\mathbf{A}, \mathbf{b} = \mathbf{A}\mathbf{s} + \mathbf{e} \bmod q)
 \end{equation}
 
-The Decisional MLWE problem challenges an adversary to distinguish between samples drawn natively from $\mathcal{A}_{\mathbf{s},\chi}$ versus samples drawn completely uniformly from $R_q^{k \times k} \times R_q^k$.
+The Decisional MLWE problem challenges an adversary to distinguish between samples drawn from $\mathcal{A}_{\mathbf{s},\chi}$ versus samples drawn completely uniformly from $R_q^{k \times k} \times R_q^k$.
 
 \subsubsection{Algorithmic Complexity in Assembly}
 The matrix vector multiplication $\mathbf{A}\mathbf{s}$ dictates the execution ceiling. Naive convolution of two polynomials of degree $n-1$:
@@ -27,11 +27,11 @@ requires $\mathcal{O}(n^2)$ integer multiplications. To bypass this within Corte
 \begin{equation}
 c = \text{INTT}(\text{NTT}(a) \circ \text{NTT}(b))
 \end{equation}
-where $\circ$ is pointwise multiplication. The forward NTT evaluates a polynomial $a(X)$ at the $n$ primitive roots of unity modulo $q$. The Cooley-Tukey butterfly algorithm natively reduces this to $\mathcal{O}(n \log n)$. However, the Cortex-M0 (Class 0 architecture) fundamentally lacks the 32-bit fast multiply-accumulate (\texttt{MAC}) instructions required to rapidly execute the Barrett or Montgomery reductions necessary after every butterfly addition, explaining the profound latency divergence between C1 (Cortex-M0) and C2 (Cortex-M4) endpoints graphed dynamically in Figure \ref{fig:keygen_time}.
+where $\circ$ is pointwise multiplication. The forward NTT evaluates a polynomial $a(X)$ at the $n$ primitive roots of unity modulo $q$. The Cooley-Tukey butterfly algorithm reduces this to $\mathcal{O}(n \log n)$. However, the Cortex-M0 (Class 0 architecture) lacks the 32-bit fast multiply-accumulate (\texttt{MAC}) instructions required to rapidly execute the Barrett or Montgomery reductions necessary after every butterfly addition, explaining the profound latency divergence between C1 (Cortex-M0) and C2 (Cortex-M4) endpoints graphed dynamically in Figure \ref{fig:keygen_time}.
 
 \subsection{Formalization of Hash-Based Trees (SLH-DSA)}
 
-Unlike LWE, SLH-DSA secures natively upon generic collision-resistant cryptographic hashing boundaries. The algorithmic structure constructs a stateful signature tree defined by height $h = h' \cdot d$, containing $d$ interconnected levels.
+Unlike LWE, SLH-DSA secures upon generic collision-resistant cryptographic hashing boundaries. The algorithmic structure constructs a stateful signature tree defined by height $h = h' \cdot d$, containing $d$ interconnected levels.
 
 The core signature size penalty on the network fragment (often reaching 17-49 KB) is calculated mathematically as the sum of a Few-Time Signature (FORS) plus $d$ distinct Merkle paths.
 \begin{equation}

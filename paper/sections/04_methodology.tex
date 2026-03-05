@@ -32,8 +32,8 @@ We uniformly evaluate 14 specific PQC parameter configurations spanning KEMs and
 \dilithium{}-3 & Signature & Module-LWE & 3 & 1,952 \\
 \dilithium{}-5 & Signature & Module-LWE & 5 & 2,592 \\
 \midrule
-\falcon{}-512 & Signature & NTRU Lattices & 1 & 897 \\
-\falcon{}-1024 & Signature & NTRU Lattices & 5 & 1,793 \\
+\falcon{}-512 & Signature & \ntru{} Lattices & 1 & 897 \\
+\falcon{}-1024 & Signature & \ntru{} Lattices & 5 & 1,793 \\
 \midrule
 \sphincs{}-128f & Signature & Hash Trees & 1 & 32 \\
 \sphincs{}-192f & Signature & Hash Trees & 3 & 48 \\
@@ -59,10 +59,10 @@ To mathematically assess "migration latency"—the scalar overhead penalty exact
 \toprule
 \textbf{Algorithm} & \textbf{Role} & \textbf{Key Size (Bytes)} & \textbf{Quantum Risk} \\
 \midrule
-RSA-2048 & Encryption/Sig & 256 & Catastrophic \\
-RSA-3072 & Encryption/Sig & 384 & Catastrophic \\
-ECDSA-P256 & Signature & 64 & Catastrophic \\
-ECDH-P256 & Key Exchange & 64 & Catastrophic \\
+RSA-2048 & Encryption/Sig & 256 & significant \\
+RSA-3072 & Encryption/Sig & 384 & significant \\
+ECDSA-P256 & Signature & 64 & significant \\
+ECDH-P256 & Key Exchange & 64 & significant \\
 AES-128 & Symmetric & 16 & Resilient (Grover) \\
 \bottomrule
 \end{tabular}
@@ -77,18 +77,18 @@ For each unique intersection spanning $A_i$ (an algorithm configuration) and $C_
 \begin{algorithmic}[1]
 \Require Set of Algorithms $\mathcal{A}$, Classes $\mathcal{C}$, iterations $K=1000$
 \ForAll{$A_i \in \mathcal{A}$}
-    \ForAll{$C_j \in \mathcal{C}$}
-        \State \text{Apply OS Bounds:} \texttt{setrlimit(C\_j.RAM)}
-        \ForAll{$k=1 \dots 50$} \Comment{Warmup caches}
-            \State \text{Execute } $A_i(\text{keygen, op1, op2})$
-        \EndFor
-        \ForAll{$k=1 \dots K$} \Comment{Empirical collection}
-            \State $T_{start} \Gets \text{time()}$, $M_{start} \Gets \text{rss()}$
-            \State \text{Execute } $A_i$
-            \State $T_{end} \Gets \text{time()}$, $M_{end} \Gets \text{rss()}$
-            \State $Data \Gets \text{Store}(T_{end}-T_{start}, M_{end}-M_{start})$
-        \EndFor
-    \EndFor
+ \ForAll{$C_j \in \mathcal{C}$}
+ \State \text{Apply OS Bounds:} \texttt{setrlimit(C\_j.RAM)}
+ \ForAll{$k=1 \dots 50$} \Comment{Warmup caches}
+ \State \text{Execute } $A_i(\text{keygen, op1, op2})$
+ \EndFor
+ \ForAll{$k=1 \dots K$} \Comment{Empirical collection}
+ \State $T_{start} \Gets \text{time()}$, $M_{start} \Gets \text{rss()}$
+ \State \text{Execute } $A_i$
+ \State $T_{end} \Gets \text{time()}$, $M_{end} \Gets \text{rss()}$
+ \State $Data \Gets \text{Store}(T_{end}-T_{start}, M_{end}-M_{start})$
+ \EndFor
+ \EndFor
 \EndFor
 \end{algorithmic}
 \end{algorithm}
@@ -103,14 +103,14 @@ Raw empirical datasets innately capture disruptive environmental operating syste
 \Require Raw Dataset $D_{raw}$
 \State $D_{clean} \Gets \emptyset$
 \ForAll{metric $m \in D_{raw}$}
-    \State $Q_1 \Gets m.\text{quantile}(0.25)$
-    \State $Q_3 \Gets m.\text{quantile}(0.75)$
-    \State $IQR \Gets Q_3 - Q_1$
-    \State $L \Gets Q_1 - 1.5 \times IQR$ \Comment{Lower Bound}
-    \State $U \Gets Q_3 + 1.5 \times IQR$ \Comment{Upper Bound}
-    \If{$L \leq x \leq U \quad \forall x \in m$}
-        \State $D_{clean} \Gets D_{clean} \cup x$
-    \EndIf
+ \State $Q_1 \Gets m.\text{quantile}(0.25)$
+ \State $Q_3 \Gets m.\text{quantile}(0.75)$
+ \State $IQR \Gets Q_3 - Q_1$
+ \State $L \Gets Q_1 - 1.5 \times IQR$ \Comment{Lower Bound}
+ \State $U \Gets Q_3 + 1.5 \times IQR$ \Comment{Upper Bound}
+ \If{$L \leq x \leq U \quad \forall x \in m$}
+ \State $D_{clean} \Gets D_{clean} \cup x$
+ \EndIf
 \EndFor
 \State \Return $D_{clean}$
 \end{algorithmic}
@@ -132,18 +132,18 @@ Energy overhead ($E_{total}$) is intrinsically partitioned between localized com
 
 \subsection{Feasibility Classification Routine}
 
-To interpret boolean pass/fail status metrics representing algorithms attempting to run within specific IoT memory pools, we encode an automated feasibility mapping schema comparing maximum theoretical limits natively embedded inside our constraints modules against empirical output.
+To interpret boolean pass/fail status metrics representing algorithms attempting to run within specific IoT memory pools, we encode an automated feasibility mapping schema comparing maximum theoretical limits embedded inside our constraints modules against empirical output.
 
 \begin{algorithm}
 \caption{Class-Agnostic Status Classification}\label{alg:feasibility}
 \begin{algorithmic}[1]
 \Require Array $Metrics$, Node Thresholds $C_{budget}$
 \If{$Metrics.RAM > C_{budget}.RAM$}
-    \State \Return INFEASIBLE 
+ \State \Return INFEASIBLE 
 \ElsIf{$Metrics.Time > C_{budget}.Time\_Crit \vee Metrics.RAM > 0.85 \times C_{budget}.RAM$}
-    \State \Return MARGINAL
+ \State \Return MARGINAL
 \Else
-    \State \Return FEASIBLE
+ \State \Return FEASIBLE
 \EndIf
 \end{algorithmic}
 \end{algorithm}

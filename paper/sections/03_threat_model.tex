@@ -13,13 +13,13 @@ Crucially, $\mathcal{A}_{\text{CRQC}}$ possesses computational access to a crypt
 
 \subsection{The "Harvest Now, Decrypt Later" Immediacy}
 
-Unlike physical infrastructure attacks, cryptographic breaches inherently traverse time. IoT traffic streams---such as digitized medical telemetry logs or encrypted municipal grid commands---are captured indiscriminately as bulk ciphertexts today. Because the long-term confidentiality thresholds of these records frequently exceed 25 years, the retroactive exposure hazard effectively demands present-day PQC adoption regardless of immediate commercial quantum availability metrics.
+Unlike physical infrastructure attacks, cryptographic breaches traverse time. IoT traffic streams---such as digitized medical telemetry logs or encrypted municipal grid commands---are captured indiscriminately as bulk ciphertexts today. Because the long-term confidentiality thresholds of these records frequently exceed 25 years, the retroactive exposure hazard effectively demands present-day PQC adoption regardless of immediate commercial quantum availability metrics.
 
 \subsection{Side-Channel Vulnerabilities}
 
 Beyond purely algebraic quantum breaches, $\mathcal{A}_{\text{CRQC}}$ is assumed to possess extensive localized hardware penetration metrics. Specifically:
 \begin{itemize}
-    \item \textbf{Timing Attacks:} Adversaries monitor minor CPU execution variations occurring during non-constant-time polynomial branch logic (e.g., Gaussian rejection sampling bounds typical in \falcon{}).
-    \item \textbf{Differential Power Analysis (DPA):} Adversaries infer the secret lattice error term polynomial gradients strictly by correlating power trace consumption spikes executed by the IoT microcontroller mapping instructions to memory \cite{kocher1999differential, hutter2011side}.
+ \item \textbf{Timing Attacks:} Adversaries monitor minor CPU execution variations occurring during non-constant-time polynomial branch logic (e.g., Gaussian rejection sampling bounds typical in \falcon{}).
+ \item \textbf{Differential Power Analysis (DPA):} Adversaries infer the secret lattice error term polynomial gradients strictly by correlating power trace consumption spikes executed by the IoT microcontroller mapping instructions to memory \cite{kocher1999differential, hutter2011side}.
 \end{itemize}
-These models heavily mandate that deployed IoT solutions execute strictly constant-time functions. Constant-time algorithms unconditionally execute at identical clock-cycle bounds regardless of input payloads, deliberately neutralizing external timing leakages at the explicit cost of massive performance saturation.
+These models heavily mandate that deployed IoT solutions execute strictly constant-time functions. Constant-time algorithms unconditionally execute at identical clock-cycle bounds regardless of input payloads, deliberately neutralizing external timing leakages at the explicit cost of substantial performance saturation.

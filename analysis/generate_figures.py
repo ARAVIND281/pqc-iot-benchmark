@@ -250,7 +250,18 @@ def fig5_memory(data: Dict[str, pd.DataFrame]):
     ax.set_ylabel('Peak Memory Usage (KB)', fontsize=FONT_SIZE_LABEL)
     ax.set_title('Figure 5: Peak Memory Usage by Algorithm', fontsize=FONT_SIZE_TITLE)
     ax.set_xticks(x + width)
-    ax.set_xticklabels(algorithms, rotation=45, ha='right', fontsize=FONT_SIZE_TICK)
+    
+    # Abbreviate algorithm names to prevent overlap
+    abbreviations = {
+        'Kyber-512': 'K-512', 'Kyber-768': 'K-768', 'Kyber-1024': 'K-1024',
+        'Dilithium2': 'ML-DSA-2', 'Dilithium3': 'ML-DSA-3', 'Dilithium5': 'ML-DSA-5',
+        'FALCON-512': 'FN-512', 'FALCON-1024': 'FN-1024',
+        'SPHINCS+-128s': 'SLH-128', 'SPHINCS+-192s': 'SLH-192', 'SPHINCS+-256s': 'SLH-256',
+        'NTRU-HPS-2048-509': 'NTRU-509', 'NTRU-HPS-2048-677': 'NTRU-677', 'NTRU-HPS-4096-821': 'NTRU-821'
+    }
+    short_labels = [abbreviations.get(a, a) for a in algorithms]
+    
+    ax.set_xticklabels(short_labels, rotation=45, ha='right', fontsize=FONT_SIZE_TICK)
     ax.legend(title='Device Class')
     
     plt.tight_layout()
@@ -278,14 +289,25 @@ def fig6_boxplot(data: Dict[str, pd.DataFrame]):
         
         if len(dc_df) == 0:
             continue
+            
+        # Abbreviate names
+        abbreviate = lambda x: x.replace('Kyber', 'K').replace('Dilithium', 'ML-DSA-').replace('NTRU-HPS-2048-', 'N-').replace('NTRU-HPS-4096-', 'N-').replace('SPHINCS+-', 'SLH-').replace('s', '')
+        dc_df = dc_df.copy()
+        dc_df['algorithm_short'] = dc_df['algorithm'].apply(abbreviate)
         
         # Create box plot
-        dc_df.boxplot(column='total_time_ms', by='algorithm', ax=axes[i],
-                     rot=45, fontsize=8)
+        dc_df.boxplot(column='total_time_ms', by='algorithm_short', ax=axes[i],
+                     rot=45, fontsize=8, showfliers=True)
         axes[i].set_title(dc, fontsize=FONT_SIZE_LABEL)
         axes[i].set_xlabel('')
         axes[i].set_ylabel('Total Time (ms)' if i == 0 else '')
         axes[i].set_yscale('log')
+        
+        # Determine strict bounds to avoid 0 to 1 collapsing on empty ranges
+        min_val = dc_df['total_time_ms'].min()
+        max_val = dc_df['total_time_ms'].max()
+        if not pd.isna(min_val) and not pd.isna(max_val) and min_val > 0:
+            axes[i].set_ylim(min_val * 0.5, max_val * 2.0)
     
     fig.suptitle('Figure 6: Distribution of Total Execution Time', 
                 fontsize=FONT_SIZE_TITLE, y=1.02)
@@ -592,12 +614,15 @@ def fig13_cdf(data: Dict[str, pd.DataFrame]):
         yvals = np.arange(len(sorted_data))/float(len(sorted_data)-1)
         ax.plot(sorted_data, yvals, label=algo, color=colors[i], linewidth=2)
     ax.set_xscale('log')
-    ax.set_xlabel('Total Execution Time (ms)', fontsize=12)
-    ax.set_ylabel('Cumulative Probability', fontsize=12)
-    ax.set_title('Figure 13: CDF of Execution Times', fontsize=14)
-    ax.legend(bbox_to_anchor=(1.05, 1), loc='upper left', fontsize=8)
+    ax.set_xlabel('Total Execution Time (ms)', fontsize=FONT_SIZE_LABEL)
+    ax.set_ylabel('Cumulative Probability', fontsize=FONT_SIZE_LABEL)
+    ax.set_title('Figure 13: CDF of Execution Times', fontsize=FONT_SIZE_TITLE)
+    
+    # Increase legend font size and clustering
+    ax.legend(bbox_to_anchor=(1.05, 1), loc='upper left', fontsize=11, ncol=1 if len(df['algorithm'].unique()) <= 10 else 2)
+    
     plt.tight_layout()
-    plt.savefig(FIGURES_DIR / 'fig13_cdf.png', dpi=300, bbox_inches='tight')
+    plt.savefig(FIGURES_DIR / 'fig13_cdf.png', dpi=FIGURE_DPI, bbox_inches='tight')
     plt.close()
     print("✓ Generated: fig13_cdf.png")
 

@@ -3,29 +3,52 @@
 \label{sec:tls_handshake}
 %-----------------------------------------------------------------------
 
-While isolated algorithmic latency constraints dictate endpoint viability, true networked viability requires mapping these primitives explicitly into the Transport Layer Security (TLS 1.3) protocol \cite{campagna2020tls}, the de facto standard safeguarding IoT application boundaries.
+While isolated algorithmic latency constraints dictate endpoint viability, true networked viability requires mapping these primitives into the Transport Layer Security (TLS 1.3) protocol \cite{campagna2020tls}, the de facto standard safeguarding IoT application boundaries.
 
 \subsection{The TLS 1.3 Handshake Framework}
 
 The classical TLS 1.3 handshake utilizes Elliptic Curve Diffie-Hellman (ECDHE) for ephemeral key establishment and ECDSA or RSA signatures for server/client authentication. Migrating to Post-Quantum variants introduces unprecedented byte-payload expansions directly into the critical initial round-trip limits.
 
-A standard hybrid Post-Quantum TLS 1.3 `ClientHello` must encapsulate both classical \texttt{X25519} key shares (32 bytes) and the chosen post-quantum KEM public key. For \kyber{}-512, the `KeyShare` extension instantly expands from 32 bytes to $32 + 800 = 832$ bytes. While this comfortably fits within a standard 1,500-byte Ethernet Maximum Transmission Unit (MTU), it shatters the 127-byte MTU limit inherent to IEEE 802.15.4 (Zigbee/Thread) constraints natively powering Class 1 sensors.
+A standard hybrid Post-Quantum TLS 1.3 `ClientHello` must encapsulate both classical \texttt{X25519} key shares (32 bytes) and the chosen post-quantum KEM public key. For \kyber{}-512, the `KeyShare` extension instantly expands from 32 bytes to $32 + 800 = 832$ bytes. While this comfortably fits within a standard 1,500-byte Ethernet Maximum Transmission Unit (MTU), it shatters the 127-byte MTU limit inherent to IEEE 802.15.4 (Zigbee/Thread) constraints powering Class 1 sensors.
 
 \subsection{Authentication Fragmentation and Datagram Limitations}
 
 The most severe bottleneck within the TLS sequence manifests during the \texttt{CertificateVerify} and \texttt{Certificate} message blocks.
 
 \begin{itemize}
-    \item \textbf{Classical Baseline:} An ECDSA-P256 certificate chain combined with the runtime signature totals roughly $500 - 800$ bytes, neatly fitting within a single UDP datagram for DTLS configurations.
-    \item \textbf{Post-Quantum Dilemma:} Utilizing \dilithium{}-2 generates a $1,312$-byte public key and a $2,420$-byte signature natively. The resulting \texttt{CertificateVerify} payload exceeds $4$ KB. 
+ \item \textbf{Classical Baseline:} An ECDSA-P256 certificate chain combined with the runtime signature totals roughly $500 - 800$ bytes, neatly fitting within a single UDP datagram for DTLS configurations.
+ \item \textbf{Post-Quantum Dilemma:} Utilizing \dilithium{}-2 generates a $1,312$-byte public key and a $2,420$-byte signature . The resulting \texttt{CertificateVerify} payload exceeds $4$ KB. 
 \end{itemize}
 
 This forces lower OSI layer protocols (e.g., 6LoWPAN) to execute intense packet fragmentations. Transmitting a 4 KB payload over a 127-byte 802.15.4 conduit requires roughly 40 distinct MAC-layer frames. In standard IoT networks featuring a mild 5\% packet loss coefficient, the mathematical probability of successfully receiving all 40 unacknowledged frames sequentially drops substantially. If intermediate routing nodes drop a single fragment, the entire TLS handshake fails, necessitating a full re-transmission cycle consuming exponential network energy bounds.
+
+\begin{table}[htbp]
+\caption{Network Communication Overhead and Fragmentation Scaling}
+\label{tab:network_overhead}
+\centering
+\resizebox{\columnwidth}{!}{
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Primitive} & \textbf{Payload (B)} & \textbf{802.15.4 Frames} & \textbf{Ethernet Frames} \\
+\midrule
+ECDSA-P256 & 128 & 2 & 1 \\
+\dilithium{}-2 & 3,732 & 47 & 3 \\
+\dilithium{}-3 & 5,245 & 66 & 4 \\
+\falcon{}-512 & 1,563 & 20 & 2 \\
+\sphincs{}-128f & 17,120 & 214 & 12 \\
+\midrule
+ECDHE-X25519 & 64 & 1 & 1 \\
+\kyber{}-512 & 1,568 & 20 & 2 \\
+\kyber{}-768 & 2,272 & 29 & 2 \\
+\bottomrule
+\end{tabular}
+}
+\end{table}
 
 \subsection{The "KEMTLS" Alternative Framework}
 
 To circumvent the signature payload crisis, literature increasingly investigates the KEMTLS framework—a sequence strictly utilizing Key Encapsulation Mechanisms (KEMs) for both ephemeral secrecy \textit{and} explicit authentication, completely stripping heavy digital signatures (ML-DSA / SLH-DSA) from the handshake layer.
 
-KEMTLS authenticates servers by embedding their long-term KEM public key within the certificate. The client generates an ephemeral secret, encapsulates it directly under the server's public key, and transmits the resulting ciphertext. Since \kyber{}-512 ciphertexts are strictly 768 bytes (drastically smaller than a 2,420-byte \dilithium{}-2 signature), KEMTLS natively circumvents significant datagram fragmentation. 
+KEMTLS authenticates servers by embedding their long-term KEM public key within the certificate. The client generates an ephemeral secret, encapsulates it directly under the server's public key, and transmits the resulting ciphertext. Since \kyber{}-512 ciphertexts are strictly 768 bytes (drastically smaller than a 2,420-byte \dilithium{}-2 signature), KEMTLS circumvents significant datagram fragmentation. 
 
-However, delegating authentication to KEMs fundamentally shifts the computational burden. The server is forced to execute a heavy Decapsulation operation sequentially simply to authenticate the connection, exposing the infrastructure to highly asymmetrical Denial-of-Service (DoS) attacks where cheap client `ClientHello` connections trigger massive CPU cycles on backend IoT edge-gateways.
+However, delegating authentication to KEMs shifts the computational burden. The server is forced to execute a heavy Decapsulation operation sequentially simply to authenticate the connection, exposing the infrastructure to highly asymmetrical Denial-of-Service (DoS) attacks where cheap client `ClientHello` connections trigger substantial CPU cycles on backend IoT edge-gateways.

@@ -9,7 +9,7 @@ In response to this existential cryptographic threat, the National Institute of 
 
 The Internet of Things (IoT) represents arguably the most challenging and vulnerable deployment target in this post-quantum transition. By 2025, an estimated 75 billion devices will comprise the broader IoT ecosystem \cite{statista2021iot}, managing critical infrastructure across medical telemetry, industrial control systems, automotive V2X networking, and smart grids. Unlike cloud servers or mobile processors, IoT devices operate strictly within the severe resource parameters defined by RFC 7228 \cite{bormann2014coap}. Specifically, these constrained environments frequently possess minimal RAM available for cryptographic stacks ($<50$ KB), operate on microcontrollers executing under 50 MHz, and are bound by extreme multi-year battery lifecycles requiring sub-milliwatt power budgets.
 
-The mathematical shift from classical cryptography to post-quantum lattices, hash trees, and codes introduces immense overhead, inherently clashing with IoT constraints. Post-quantum public keys and signatures are frequently orders of magnitude larger than their ECC counterparts, ballooning TLS handshake network fragmentation, while the complex underlying matrix arithmetic saturates processor instruction cycles and memory stacks, accelerating energy depletion.
+The mathematical shift from classical cryptography to post-quantum lattices, hash trees, and codes introduces immense overhead, clashing with IoT constraints. Post-quantum public keys and signatures are frequently orders of magnitude larger than their ECC counterparts, ballooning TLS handshake network fragmentation, while the complex underlying matrix arithmetic saturates processor instruction cycles and memory stacks, accelerating energy depletion.
 
 \subsection{Novelty and Research Gap}
 
@@ -23,8 +23,8 @@ This paper addresses these unmapped intersections by asking: \textit{Given the n
 
 To address these gaps, our contributions are structured as follows:
 \begin{enumerate}
-    \item \textbf{Comprehensive Cross-Class Benchmarking:} We execute and analyze over 45,000 empirical measurements covering 14 algorithm parameter sets directly mapped against tightly constrained C0, C1, and C2 hardware simulations.
-    \item \textbf{Expanded Energy \& Communication Analysis:} We construct a unified energy estimation model encompassing both microcontroller cycle drain and radio frequency (RF) transmission overheads for inflated PQC key sizes.
-    \item \textbf{TOPSIS Decision Framework:} We employ a multi-attribute statistical decision matrix to objectively rank algorithms based on speed, memory footprint, energy, key size, and security scale, yielding the first deterministic PQC algorithm deployment guide tailored specifically for IoT system architects.
-    \item \textbf{Classical vs. Quantum and Hybrid Profiling:} We establish classical bounds using RSA/ECC algorithms to explicitly quantify the ``migration cost,'' addressing overhead metrics for Hybrid TLS 1.3 models that currently bridge the classical-quantum divide.
+ \item \textbf{Comprehensive Cross-Class Benchmarking:} We execute and analyze over 45,000 empirical measurements covering 14 algorithm parameter sets directly mapped against tightly constrained C0, C1, and C2 hardware simulations.
+ \item \textbf{Expanded Energy \& Communication Analysis:} We construct a unified energy estimation model encompassing both microcontroller cycle drain and radio frequency (RF) transmission overheads for inflated PQC key sizes.
+ \item \textbf{TOPSIS Decision Framework:} We employ a multi-attribute statistical decision matrix to objectively rank algorithms based on speed, memory footprint, energy, key size, and security scale, yielding the first deterministic PQC algorithm deployment guide tailored specifically for IoT system architects.
+ \item \textbf{Classical vs. Quantum and Hybrid Profiling:} We establish classical bounds using RSA/ECC algorithms to quantify the ``migration cost,'' addressing overhead metrics for Hybrid TLS 1.3 models that currently bridge the classical-quantum divide.
 \end{enumerate}

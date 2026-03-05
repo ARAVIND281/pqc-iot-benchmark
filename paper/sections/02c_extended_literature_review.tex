@@ -14,12 +14,12 @@ To fully justify the novelty of our cross-class hardware simulation approach, we
 \textbf{Authors} & \textbf{Year} & \textbf{Target Hardware} & \textbf{Algorithms Evaluated} & \textbf{Primary Focus} & \textbf{Critical Gaps Addressed by This Work} \\
 \midrule
 Kannwischer et al. \cite{kannwischer2019pqm4} & 2019 & ARM Cortex-M4 & All NIST Round 2 & Core instruction latency and stack memory usage. & Pre-standardization; lacks C0/C1 constraints and RF energy modeling. \\
-Fitzgibbon \& Ottaviani \cite{fitzgibbon2024benchmarking} & 2024 & Raspberry Pi 4 & ML-KEM, ML-DSA & Real-time Linux execution overheads. & Focuses on non-constrained (C2+) architecture; omits Falcon and SPHINCS+. \\
+Fitzgibbon \& Ottaviani \cite{fitzgibbon2024benchmarking} & 2024 & Raspberry Pi 4 & ML-KEM, ML-DSA & Real-time Linux execution overheads. & Focuses on non-constrained (C2+) architecture; omits \falcon{} and SPHINCS+. \\
 Lopez et al. \cite{lopez2025post} & 2025 & ESP32-C3 & Selected Lattice KEMs & Wi-Fi transmission penalties during PQC handshakes. & Narrow algorithm scope; missing structural hardware feasibility metrics. \\
-Silva et al. \cite{secrypt2025esp32} & 2025 & ESP32 (FreeRTOS) & ML-DSA, FN-DSA & Floating-point emulation stalls in Falcon. & Limits analysis to C2 devices; lacks TOPSIS objective decision derivations. \\
-Demir et al. \cite{demir2025power} & 2025 & ARM Cortex-M & Kyber masked & Differential power analysis and masking overheads. & Focuses exclusively on physical side-channels rather than algorithmic scaling bounds. \\
-Sajimon et al. \cite{sajimon2022lightweight} & 2022 & FPGA \& M4 & NTRU variants & Hardware-software co-design accelerations. & Excludes recent FIPS 203-205 finalized standards. \\
-Ye et al. \cite{ye2024highly} & 2024 & ASIC (28nm) & Kyber, Dilithium & Silicon floorplan optimization for PQC coprocessors. & Hardware specific; not applicable to legacy brownfield IoT software migrations. \\
+Silva et al. \cite{secrypt2025esp32} & 2025 & ESP32 (FreeRTOS) & ML-DSA, FN-DSA & Floating-point emulation stalls in \falcon{}. & Limits analysis to C2 devices; lacks TOPSIS objective decision derivations. \\
+Demir et al. \cite{demir2025power} & 2025 & ARM Cortex-M & \kyber{} masked & Differential power analysis and masking overheads. & Focuses exclusively on physical side-channels rather than algorithmic scaling bounds. \\
+Sajimon et al. \cite{sajimon2022lightweight} & 2022 & FPGA \& M4 & \ntru{} variants & Hardware-software co-design accelerations. & Excludes recent FIPS 203-205 finalized standards. \\
+Ye et al. \cite{ye2024highly} & 2024 & ASIC (28nm) & \kyber{}, \dilithium{} & Silicon floorplan optimization for PQC coprocessors. & Hardware specific; not applicable to legacy brownfield IoT software migrations. \\
 Stebila et al. \cite{acmccs2023oqs} & 2023 & AWS graviton, RPi & liboqs full suite & TLS 1.3 integration and network packet fragmentation. & Primarily evaluates cloud-edge connections rather than deep edge constraints. \\
 \bottomrule
 \end{tabularx}
