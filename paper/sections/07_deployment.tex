@@ -9,14 +9,49 @@ This section operationalizes multi-attribute analysis findings directly towards 
 
 Class 0 endpoints (e.g., disposable biometric sensors) strictly lack execution stacks supporting substantial \dilithium{} operations . Practical interventions necessitate \textbf{Gateway Crypto-Delegation architectures} transmitting symmetric endpoints terminating securely at heavily guarded edge servers directly processing standardized PQC. Furthermore, symmetrical key rotation routines executed rapidly via AES-GCM strictly bypass immense KEM structural bounds indefinitely pending future advanced optimized hyper-lightweight PQC standardizations intrinsically.
 
+\begin{algorithm}[htbp]
+\caption{Class 0 Gateway Crypto-Delegation Protocol}
+\label{alg:gateway}
+\begin{algorithmic}[1]
+\Require Gateway $G$ (Class 2+), Edge Sensor $S$ (Class 0), PQC Server PK $PK_S$
+\Ensure Authenticated PQC Data Stream
+\State \textbf{[Phase 1: Factory Provisioning]}
+\State $S \Gets$ Inject symmetric 256-bit $K_{psk}$
+\State $G \Gets$ Store mapped $ID_S: K_{psk}$ safely
+\State \textbf{[Phase 2: IoT Telemetry Collection]}
+\State $S$ samples telemetry $D_{raw}$ and random nonce $N$
+\State $M \Gets \text{AES-GCM}(K_{psk}, N, D_{raw})$
+\State $S \to G: \{ID_S, N, D_{raw}, M\}$
+\State \textbf{[Phase 3: Edge Gateway PQC Encapsulation]}
+\State $G$ verifies $M$ utilizing cached $K_{psk}$
+\If {$M$ is valid}
+    \State $(c, k) \Gets \text{ML-KEM-Encaps}(PK_S)$
+    \State $\sigma \Gets \text{ML-DSA-Sign}(SK_G, D_{raw})$
+    \State $G \to \text{Server}: \{c, \text{AES-GCM}(k, D_{raw} \parallel \sigma)\}$
+\Else
+    \State Drop untrusted telemetry packet
+\EndIf
+\end{algorithmic}
+\end{algorithm}
+
 \subsection{Migration Roadmap targeting RFC 7228}
 
 Based unconditionally on empirically formulated data trends matching our modeled constraints:
 
-\begin{itemize}
- \item \textbf{C2 Endpoints (Smart Controllers):} Extensively capable of replacing standard implementations utilizing \kyber{}-768 for KEM and \dilithium{}-2 ensuring optimal robust Level 3 equivalents unconditionally.
- \item \textbf{C1 Endpoints (Telemetry Wearables):} Strictly bound deployments heavily dictating highly scaled \kyber{}-512 footprints. \falcon{} utilization is conditionally endorsed provided FPUs exist hardware-side preventing complex emulation stalls.
-\end{itemize}
+\begin{table*}[htbp]
+\caption{Definitive PQC IoT Deployment Recommendation Matrix}
+\label{tab:deployment_matrix}
+\centering
+\begin{tabularx}{\textwidth}{l l l X}
+\toprule
+\textbf{RFC 7228 Target} & \textbf{Feasible KEM} & \textbf{Feasible Signature} & \textbf{Deployment Constraints \& Edge Cases} \\
+\midrule
+\textbf{Class 0 ($<10$ KB RAM)} & None (INFEASIBLE) & None (INFEASIBLE) & Requires strictly symmetric AES-GCM delegation via gateway proxies. \\
+\textbf{Class 1 ($<50$ KB RAM)} & \kyber{}-512 & \falcon{}-512\footnote{Hardware Floating Point Units (FPUs) are practically mandatory for Falcon deployments to avoid severe $15\times$ software emulation time penalties on simple Cortex-M3 cores.} & \dilithium{} entirely triggers OOM. \falcon{} requires hardware FPU presence to avoid 15x emulation time penalties. \\
+\textbf{Class 2 ($<250$ KB RAM)} & \kyber{}-768 & \dilithium{}-2 / \dilithium{}-3 & Safely hosts NIST Level 3 configurations. Hybrid ECDSA modes risk fragmentation if MTU $<1500$ bytes. \\
+\bottomrule
+\end{tabularx}
+\end{table*}
 
 Figure \ref{fig:feasibility} defines valid architectural boundaries directly encoding operational status bounds visually representing generalized execution probabilities spanning substantial variable datasets .
 
@@ -42,3 +77,36 @@ As documented within our Class 2 equivalents (Table \ref{tab:raw_class2}), \dili
 \end{itemize}
 
 This mathematically proves that standard ``drop-in'' PQC replacements are incompatible with high-density, low-latency industrial use-cases without deploying substantial parallel ASIC accelerators hardware-side handling batch-verifications .
+
+\subsection{Case Study: Smart Home Mesh Networks}
+
+Conversely, evaluating Class 1 and Class 2 deployments inside low-density, localized architectures such as residential Smart Home environments (e.g., Thread, Zigbee) presents an entirely divergent operational reality. A smart thermostat adjusting local HVAC configurations rarely transmits telemetry exceeding 1 Hz. 
+
+Assuming a pure KEMTLS architecture (Algorithm \ref{alg:kemtls}) driven strictly by \kyber{}-512, the initial firmware provisioning guarantees long-term master secrets avoiding heavy signature components outright. While the absolute 1,568-byte encapsulation payloads technically trigger 802.15.4 MTU packet fragmentation resulting in $\approx 20$ discrete MAC-layer frames, the relaxed $1$ Hz frequency entirely negates critical congestion overlaps. Hence, the TOPSIS ranking solidly endorses \kyber{}-512 for static Smart Home frameworks, establishing a primary architectural validation for lattice KEM integrations on deeply constrained batteries.
+
+\subsection{Case Study: Critical Medical Telemetry}
+
+Implantable Medical Devices (IMDs), including automated pacemakers and continuous glucose monitors, operate directly upon the edge of human biological integration. Here, latency requirements (e.g., triggering a remote therapeutic shock) demand real-time verification ($<50$ ms), while absolute device lifespans necessitate microwatt limits to prevent surgical battery replacements.
+
+According to our hardware analysis mapping, applying SLH-DSA (\sphincs{}) is medically dangerous due to executing $540+$ ms signature generations, triggering localized hardware heating and disastrous latency pools. \falcon{}-512, while generating ultra-small byte payloads optimized for medical Bluetooth Low Energy (BLE), invokes volatile execution spikes (up to $50\times$ baseline delays) when embedded Cortex-M3 cores lack floating-point ALUs. Consequently, the optimal architectural balance mandates \textbf{Gateway Crypto-Delegation} (Algorithm \ref{alg:gateway}), wherein the IMD utilizes strictly symmetric AES-GCM payloads locally before pushing post-quantum encapsulation processing entirely to a Class 2+ wearable bridge (e.g., a smartphone or specialized holster). 
+
+\subsection{NIST Migration Timeline Mapping}
+
+Table \ref{tab:timeline} structurally translates the August 2024 FIPS 203-205 finalized standards into actionable enterprise timelines explicitly categorized for varied IoT life-cycles.
+
+\begin{table}[htbp]
+\caption{Strategic PQC Migration Windows for IoT Architectures}
+\label{tab:timeline}
+\centering
+\resizebox{\columnwidth}{!}{
+\begin{tabular}{llp{0.5\columnwidth}}
+\toprule
+\textbf{Phase} & \textbf{Timeline} & \textbf{IoT Migration Directives} \\
+\midrule
+Discovery & 2024-2025 & Execute full binary inventory assessing bare-metal crypto-hooks. Audit existing IoT TLS MTU configuration limits. \\
+Hybrid & 2026-2029 & Deploy strictly Hybrid ECDHE + ML-KEM structures exclusively prioritizing Class 2 architectures. \\
+Deprecation & 2030+ & Cease manufacturing native Class 1 sensors reliant purely on ECC 256. Mandate AES symmetric delegation for C0. \\
+\bottomrule
+\end{tabular}
+}
+\end{table}

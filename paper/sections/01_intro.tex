@@ -9,6 +9,13 @@ In response to this existential cryptographic threat, the National Institute of 
 
 The Internet of Things (IoT) represents arguably the most challenging and vulnerable deployment target in this post-quantum transition. By 2025, an estimated 75 billion devices will comprise the broader IoT ecosystem \cite{statista2021iot}, managing critical infrastructure across medical telemetry, industrial control systems, automotive V2X networking, and smart grids. Unlike cloud servers or mobile processors, IoT devices operate strictly within the severe resource parameters defined by RFC 7228 \cite{bormann2014coap}. Specifically, these constrained environments frequently possess minimal RAM available for cryptographic stacks ($<50$ KB), operate on microcontrollers executing under 50 MHz, and are bound by extreme multi-year battery lifecycles requiring sub-milliwatt power budgets.
 
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\columnwidth]{fig15_migration_cost}
+\caption{The severe baseline computational and networking payload expansion characterizing the post-quantum transition.}
+\label{fig:migration_cost}
+\end{figure}
+
 The mathematical shift from classical cryptography to post-quantum lattices, hash trees, and codes introduces immense overhead, clashing with IoT constraints. Post-quantum public keys and signatures are frequently orders of magnitude larger than their ECC counterparts, ballooning TLS handshake network fragmentation, while the complex underlying matrix arithmetic saturates processor instruction cycles and memory stacks, accelerating energy depletion.
 
 \subsection{Novelty and Research Gap}

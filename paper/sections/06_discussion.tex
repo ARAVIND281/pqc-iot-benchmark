@@ -30,9 +30,45 @@ Figure \ref{fig:topsis} models standardized aggregated algorithmic output arrays
 \label{fig:topsis}
 \end{figure}
 
+\begin{table}[htbp]
+\caption{Cross-Study Hardware Result Validation}
+\label{tab:validation}
+\centering
+\resizebox{\columnwidth}{!}{
+\begin{tabular}{llp{0.55\columnwidth}}
+\toprule
+\textbf{Reference} & \textbf{Hardware Domain} & \textbf{Simulated Finding Correlation} \\
+\midrule
+\textbf{Our Work} & \textbf{Class 0 / 1 / 2} & \textbf{Defines standardized RFC 7228 memory/time feasibility boundaries.} \\
+pqm4 \cite{kannwischer2019pqm4} & ARM Cortex-M4 & Algorithmic complexity scaling identically mirrors our $O(N \log N)$ NTT emulation boundaries. \\
+Fitzgibbon \cite{fitzgibbon2024benchmarking} & Raspberry Pi (POSIX) & Corroborates our findings that general digital signatures severely bottleneck constrained memory pools independently of compute limits. \\
+Lopez \cite{lopez2025post} & ESP32-C3 (WiFi) & Concurrent radio network activation degrades stack metrics matching our scaled $E_{tx}$ transmission energy formulations. \\
+Silva \cite{secrypt2025esp32} & ESP32 (FreeRTOS) & Emulation of floating-point computations induces severe timing stalls for algorithms like \falcon{} absent native FPU hardware, mirroring our dataset splits. \\
+\bottomrule
+\end{tabular}
+}
+\end{table}
+
 \subsection{The Pareto Frontier}
 
 Investigating explicit operational bounds correlating Security Scale magnitudes uniformly towards Resource Drain delineates a distinct Pareto frontier where \kyber{}-512 dominates. Elevating security logic toward NIST Level 5 structures doubles baseline memory drains while compounding overall application timing cycles exponentially, yielding exceptionally minor residual efficiency buffers. \kyber{}-768 operates atop the Pareto boundary ensuring robust deployment profiles for explicit Level 3 environments while decisively avoiding boundary bottlenecks encountered by substantial algorithms including \sphincs{}.
+
+\begin{table}[htbp]
+\caption{Non-Linear Scaling Factors across NIST Security Levels (Baseline = Level 1/2)}
+\label{tab:scaling_factor}
+\centering
+\begin{tabular}{lccc}
+\toprule
+\textbf{Algorithm Family} & \textbf{Level Target} & \textbf{Timing Scalar} & \textbf{Memory Scale} \\
+\midrule
+\multirow{2}{*}{ML-KEM (Kyber)} & Level 3 (768) & 1.45x & 1.50x \\
+& Level 5 (1024) & 2.10x & 1.95x \\
+\midrule
+\multirow{2}{*}{ML-DSA (Dilithium)} & Level 3 (3) & 1.62x & 1.45x \\
+& Level 5 (5) & 2.45x & 2.15x \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 \subsection{Significant Differences in Architectures}
 
@@ -58,6 +94,52 @@ Peak Memory & 456.2 & $<0.001$ & 0.75 \\
 
 Because mathematical stability concerning complex generalized lattice formulations possesses limited multi-decade chronological precedence, NIST formally endorses \textit{Hybrid Frameworks} executing sequential classical and post-quantum payloads concatenated utilizing robust Key Derivation Functions (KDFs). Benchmarking dual ECDH-P256 + ML-KEM instantiations triggers extreme 200\% computational loads coupled strongly to fragmented transmission domains significantly decreasing deployment viabilities across C1 hardware entirely.
 
+\begin{algorithm}[htbp]
+\caption{Standardized Hybrid ECDHE + ML-KEM Exchange}
+\label{alg:hybrid}
+\begin{algorithmic}[1]
+\Require Client $C$, Server $S$
+\Ensure Quantum-Resistant Master Secret $MS_{hybrid}$
+\State \textbf{[Client Execution]}
+\State $(ek_c, P_c) \Gets \text{ECDHE-KeyGen}()$
+\State $(sk_{pq}, pk_{pq}) \Gets \text{ML-KEM-KeyGen}()$
+\State $C \to S: \{P_c, pk_{pq}\}$
+\State \textbf{[Server Execution]}
+\State $(ek_s, P_s) \Gets \text{ECDHE-KeyGen}()$
+\State $SS_{cl} \Gets \text{ECDHE-Multiply}(ek_s, P_c)$
+\State $(c, SS_{pq}) \Gets \text{ML-KEM-Encaps}(pk_{pq})$
+\State $MS_{hybrid} \Gets \text{KDF}(SS_{cl} \parallel SS_{pq})$
+\State $S \to C: \{P_s, c\}$
+\State \textbf{[Client Verification]}
+\State $SS_{cl} \Gets \text{ECDHE-Multiply}(ek_c, P_s)$
+\State $SS_{pq} \Gets \text{ML-KEM-Decaps}(sk_{pq}, c)$
+\State $MS_{hybrid} \Gets \text{KDF}(SS_{cl} \parallel SS_{pq})$
+\end{algorithmic}
+\end{algorithm}
+
+\begin{table}[htbp]
+\caption{Computational and Spatial Overhead of Hybrid Classical-Quantum Cryptography (Class 2 Simulation)}
+\label{tab:hybrid_overhead}
+\centering
+\begin{tabular}{lccc}
+\toprule
+\textbf{Integration Scheme} & \textbf{Compute (ms)} & \textbf{RAM (KB)} & \textbf{Payload (B)} \\
+\midrule
+Pure ECDHE (Classical) & 4.2 & 1.8 & 64 \\
+ECDHE + \kyber{}-512 & 9.4 & 16.5 & 1,632 \\
+ECDHE + \kyber{}-768 & 12.6 & 21.0 & 2,336 \\
+ECDSA + \dilithium{}-2 & 23.6 & 55.4 & 3,860 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
 \subsection{Sensitivity Scaling}
 
 Adjusting TOPSIS specific weight components biases outcomes dramatically. Boosting specific explicit Energy variables upwards alters structural outcomes pushing \falcon{} upward globally, validating entirely the complex framework dynamic capabilities optimizing tailored system recommendations respectively.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\columnwidth]{fig19_topsis_sensitivity}
+\caption{Heatmap demonstrating mathematical configuration rigidity profiling Kyber-768 ranking durability under variable criteria optimizations.}
+\label{fig:topsis_sensitivity}
+\end{figure}

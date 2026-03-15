@@ -52,3 +52,53 @@ To circumvent the signature payload crisis, literature increasingly investigates
 KEMTLS authenticates servers by embedding their long-term KEM public key within the certificate. The client generates an ephemeral secret, encapsulates it directly under the server's public key, and transmits the resulting ciphertext. Since \kyber{}-512 ciphertexts are strictly 768 bytes (drastically smaller than a 2,420-byte \dilithium{}-2 signature), KEMTLS circumvents significant datagram fragmentation. 
 
 However, delegating authentication to KEMs shifts the computational burden. The server is forced to execute a heavy Decapsulation operation sequentially simply to authenticate the connection, exposing the infrastructure to highly asymmetrical Denial-of-Service (DoS) attacks where cheap client `ClientHello` connections trigger substantial CPU cycles on backend IoT edge-gateways.
+
+\begin{algorithm}[htbp]
+\caption{TLS 1.3 Pure Post-Quantum KEMTLS Handshake}
+\label{alg:kemtls}
+\begin{algorithmic}[1]
+\Require IoT Client $C$, Edge Server $S$ locking Long-Term KEM PK $PK_S$
+\Ensure Authenticated Session without Digital Signatures
+\State \textbf{[Client Initial Protocol]}
+\State $(sk_E, pk_E) \Gets \text{ML-KEM-KeyGen}()$
+\State $C \to S: \text{ClientHello} \{pk_E\}$
+\State \textbf{[Server Authenticated Response]}
+\State $(c_E, SS_E) \Gets \text{ML-KEM-Encaps}(pk_E)$ 
+\State $S \to C: \text{ServerHello} \{c_E, \text{Cert}(PK_S)\}$
+\State \textbf{[Client Authentication Sequence]}
+\State $SS_E \Gets \text{ML-KEM-Decaps}(sk_E, c_E)$
+\State $(c_A, SS_A) \Gets \text{ML-KEM-Encaps}(PK_S)$ 
+\State $MS \Gets \text{KDF}(SS_E \parallel SS_A)$
+\State $C \to S: \{c_A, \text{Finished\_MAC}(MS)\}$
+\State \textbf{[Server Validation Sequence]}
+\State $SS_A \Gets \text{ML-KEM-Decaps}(SK_S, c_A)$
+\State $MS \Gets \text{KDF}(SS_E \parallel SS_A)$
+\State Verify $\text{Finished\_MAC}$ dynamically using $MS$
+\end{algorithmic}
+\end{algorithm}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\columnwidth]{fig17_tls_components}
+\caption{Server versus Client latency segmentation during standard handshakes natively highlighting KEM Decapsulation overhead processing.}
+\label{fig:tls_components}
+\end{figure}
+
+\begin{table}[htbp]
+\caption{Estimated Endpoint Cryptographic Latency during TLS 1.3 Handshakes (Class 2 Hardware)}
+\label{tab:tls_latency}
+\centering
+\resizebox{\columnwidth}{!}{
+\begin{tabular}{lrrr}
+\toprule
+\textbf{Cipher Suite Configuration} & \textbf{Client (ms)} & \textbf{Server (ms)} & \textbf{Total (ms)} \\
+\midrule
+Classical (ECDHE + ECDSA) & 7.20 & 6.80 & 14.00 \\
+\kyber{}-512 + \dilithium{}-2 & 5.14 & 14.22 & 19.36 \\
+\kyber{}-768 + \dilithium{}-3 & 8.41 & 21.95 & 30.36 \\
+\kyber{}-512 + \falcon{}-512   & 3.82 & 2.10  & 5.92  \\
+\kyber{}-512 + \sphincs{}-128f & 11.20 & 540.54 & 551.74 \\
+\bottomrule
+\end{tabular}
+}
+\end{table}

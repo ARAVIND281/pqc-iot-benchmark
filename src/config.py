@@ -391,7 +391,12 @@ FIGURE_FILES = {
     'fig9_feasibility': FIGURES_DIR / "fig9_feasibility.png",
     'fig10_topsis': FIGURES_DIR / "fig10_topsis.png",
     'fig11_tradeoff': FIGURES_DIR / "fig11_tradeoff.png",
-    'fig12_energy': FIGURES_DIR / "fig12_energy.png"
+    'fig12_energy': FIGURES_DIR / "fig12_energy.png",
+    'fig15_migration_cost': FIGURES_DIR / "fig15_migration_cost.png",
+    'fig16_memory_cascade': FIGURES_DIR / "fig16_memory_cascade.png",
+    'fig17_tls_components': FIGURES_DIR / "fig17_tls_components.png",
+    'fig18_energy_breakdown': FIGURES_DIR / "fig18_energy_breakdown.png",
+    'fig19_topsis_sensitivity': FIGURES_DIR / "fig19_topsis_sensitivity.png"
 }
 
 # =============================================================================
