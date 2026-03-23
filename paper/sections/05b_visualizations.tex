@@ -7,7 +7,7 @@ To provide a granular understanding surpassing standard tabular summations, we g
 
 \subsection{KEM Operation Scaling (Encapsulation and Decapsulation)}
 
-While Figure \ref{fig:keygen_time} focused on initial derivation bounds, the actual ongoing operational latency in Post-Quantum environments relies strictly upon Encapsulation (Alice securely transmitting symmetric materials) and Decapsulation (Bob recovering the symmetric key).
+While Figure \ref{fig:keygen_time} focused on initial derivation bounds, the actual ongoing operational latency in Post-Quantum environments relies upon Encapsulation (Alice securely transmitting symmetric materials) and Decapsulation (Bob recovering the symmetric key).
 
 \begin{figure}[htbp]
 \centering
@@ -23,7 +23,7 @@ While Figure \ref{fig:keygen_time} focused on initial derivation bounds, the act
 \label{fig:decaps}
 \end{figure}
 
-As exhibited in Figures \ref{fig:encaps} and \ref{fig:decaps}, lattice-based KEMs (\kyber{} and \ntru{}) exhibit extraordinarily tight encapsulation variances . However, decapsulation consistently draws roughly 15-20\% higher instructional penalties due to the required re-encryption steps embedded within the Fujisaki-Okamoto (FO) transform mandated for achieving strict IND-CCA2 security against active chosen-ciphertext adversaries.
+As exhibited in Figures \ref{fig:encaps} and \ref{fig:decaps}, lattice-based KEMs (\kyber{} and \ntru{}) exhibit extraordinarily tight encapsulation variances. However, decapsulation consistently draws roughly 15-20\% higher instructional penalties due to the required re-encryption steps embedded within the Fujisaki-Okamoto (FO) transform mandated for achieving strict IND-CCA2 security against active chosen-ciphertext adversaries.
 
 \subsection{Variance and Execution Consistency}
 
@@ -49,7 +49,7 @@ To analytically prove the independence of our target variables (Energy vs Memory
 \label{fig:correlation}
 \end{figure}
 
-Unsurprisingly, Energy Consumption ($E_{total}$) maps with a nearly perfect $+0.98$ correlation to Execution Latency, validating our $E_{cpu}$ calculation model. However, Key Size possesses a dramatically lower $+0.42$ linkage to CPU Energy, proving that radio transmissions and calculation times interact as strictly independent resource vectors. 
+Unsurprisingly, Energy Consumption ($E_{total}$) maps with a nearly perfect $+0.98$ correlation to Execution Latency, validating our $E_{cpu}$ calculation model. However, Key Size possesses a dramatically lower $+0.42$ linkage to CPU Energy, proving that radio transmissions and calculation times interact as independent resource vectors. 
 
 \begin{figure*}[htbp]
 \centering
@@ -58,7 +58,7 @@ Unsurprisingly, Energy Consumption ($E_{total}$) maps with a nearly perfect $+0.
 \label{fig:radar}
 \end{figure*}
 
-Figure \ref{fig:radar} isolates these vectors via localized radar projections. \falcon{} mathematically minimizes Key Sizes and validation paths but vastly over-consumes local computational limits. Conversely, \sphincs{} mathematically guarantees the smallest Key Sizes on generation while severely penalizing transmission boundaries .
+Figure \ref{fig:radar} isolates these vectors via localized radar projections. \falcon{} mathematically minimizes Key Sizes and validation paths but vastly over-consumes local computational limits. Conversely, \sphincs{} mathematically guarantees the smallest Key Sizes on generation while severely penalizing transmission boundaries.
 
 \subsection{Latency Cumulative Distribution}
 
@@ -71,20 +71,20 @@ Instead of arbitrarily defining "Average" execution parameters, Figure \ref{fig:
 \label{fig:cdf}
 \end{figure}
 
-We analytically determine that 95\% ($\alpha = 0.05$) of all \kyber{}-512 traces globally terminate beneath 8 milliseconds unconditionally, generating mathematical guarantees necessary for high-frequency IoT polling architectures .
+We analytically determine that 95\% ($\alpha = 0.05$) of all \kyber{}-512 traces globally terminate beneath 8 milliseconds unconditionally, generating mathematical guarantees necessary for high-frequency IoT polling architectures.
 
 \subsection{Security Level vs Resource Pareto Frontier}
 
-The quintessential dilemma facing IoT network architects globally is identifying the exact mathematical trade-off curve between NIST Category scaling (Level 1 $\rightarrow$ 5) versus physical battery drainage .
+The quintessential dilemma facing IoT network architects globally is identifying the exact mathematical trade-off curve between NIST Category scaling (Level 1 $\rightarrow$ 5) versus physical battery drainage.
 
 \begin{figure*}[htbp]
 \centering
 \includegraphics[width=\textwidth]{fig14_pareto}
-\caption{Pareto Frontier strictly analyzing global Resource Drain multipliers linearly versus NIST security gradations identically.}
+\caption{Pareto Frontier analyzing global Resource Drain multipliers linearly versus NIST security gradations identically.}
 \label{fig:pareto}
 \end{figure*}
 
-Figure \ref{fig:pareto} unambiguously highlights the optimal deployment boundary . Algorithms falling strictly along the Pareto optimal curve (\kyber{}-512, \falcon{}-512) maximize cryptographic resistance while utilizing physically minimal resources globally. Algorithms pushed violently rightward (e.g., \sphincs{}-256) offer theoretical absolute security while requiring physically untenable resource footprints triggering operational failures .
+Figure \ref{fig:pareto} unambiguously highlights the optimal deployment boundary. Algorithms falling along the Pareto optimal curve (\kyber{}-512, \falcon{}-512) maximize cryptographic resistance while utilizing physically minimal resources globally. Algorithms pushed violently rightward (e.g., \sphincs{}-256) offer theoretical absolute security while requiring physically untenable resource footprints triggering operational failures.
 
 \subsection{Execution vs Bandwidth Tradeoffs}
 
@@ -97,4 +97,4 @@ Finally, Figure \ref{fig:tradeoff} clusters algorithms logically by assessing pr
 \label{fig:tradeoff}
 \end{figure}
 
-This visualization proves that \textit{No ideal post-quantum algorithm currently exists for IoT endpoints .} Every single standardized protocol demands a substantial sacrifice in either radio frequency air-time lengths (Transmission Bandwidth) or immediate clock-cycle drains (Execution CPU Bounds). Architects deploying constrained infrastructure must pre-calculate identical constraint profiles mapped tightly against these empirical clusters exactly.
+No single PQC algorithm is ideal for IoT. Each demands a tradeoff between RF air-time (bandwidth) and CPU cycle drain (compute). Architects deploying constrained infrastructure must pre-calculate identical constraint profiles mapped tightly against these empirical clusters exactly.

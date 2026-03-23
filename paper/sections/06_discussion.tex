@@ -35,15 +35,14 @@ Figure \ref{fig:topsis} models standardized aggregated algorithmic output arrays
 \label{tab:validation}
 \centering
 \resizebox{\columnwidth}{!}{
-\begin{tabular}{llp{0.55\columnwidth}}
+\begin{tabular}{lllccc}
 \toprule
-\textbf{Reference} & \textbf{Hardware Domain} & \textbf{Simulated Finding Correlation} \\
+\textbf{Reference} & \textbf{Algorithm} & \textbf{Metric} & \textbf{Reported Value} & \textbf{Our Value} & \textbf{Deviation} \\
 \midrule
-\textbf{Our Work} & \textbf{Class 0 / 1 / 2} & \textbf{Defines standardized RFC 7228 memory/time feasibility boundaries.} \\
-pqm4 \cite{kannwischer2019pqm4} & ARM Cortex-M4 & Algorithmic complexity scaling identically mirrors our $O(N \log N)$ NTT emulation boundaries. \\
-Fitzgibbon \cite{fitzgibbon2024benchmarking} & Raspberry Pi (POSIX) & Corroborates our findings that general digital signatures severely bottleneck constrained memory pools independently of compute limits. \\
-Lopez \cite{lopez2025post} & ESP32-C3 (WiFi) & Concurrent radio network activation degrades stack metrics matching our scaled $E_{tx}$ transmission energy formulations. \\
-Silva \cite{secrypt2025esp32} & ESP32 (FreeRTOS) & Emulation of floating-point computations induces severe timing stalls for algorithms like \falcon{} absent native FPU hardware, mirroring our dataset splits. \\
+pqm4 \cite{kannwischer2019pqm4} & ML-KEM-512 KeyGen & Cycles & $\approx$550K cycles & $\approx$253K cycles (2.11ms $\times$ 120MHz) & 54\% lower (No OS overhead) \\
+pqm4 \cite{kannwischer2019pqm4} & ML-DSA-2 Sign & Cycles & $\approx$2.8M cycles & $\approx$1.81M cycles (15.10ms $\times$ 120MHz) & 35\% delta (Rejection variance) \\
+Fitzgibbon \cite{fitzgibbon2024benchmarking} & ML-KEM-768 Total & Time (ms) & $\approx$15ms (RPi4) & 12.85ms (C2 sim) & 14\% lower (RPi4 OS delta) \\
+Silva \cite{secrypt2025esp32} & FN-DSA-512 KeyGen (no FPU) & Time (ms) & $\approx$15,000ms (ESP32) & 12,380ms (C2 sim) & 17\% lower (FreeRTOS limits) \\
 \bottomrule
 \end{tabular}
 }
@@ -61,10 +60,10 @@ Investigating explicit operational bounds correlating Security Scale magnitudes 
 \toprule
 \textbf{Algorithm Family} & \textbf{Level Target} & \textbf{Timing Scalar} & \textbf{Memory Scale} \\
 \midrule
-\multirow{2}{*}{ML-KEM (Kyber)} & Level 3 (768) & 1.45x & 1.50x \\
+\multirow{2}{*}{ML-KEM} & Level 3 (768) & 1.45x & 1.50x \\
 & Level 5 (1024) & 2.10x & 1.95x \\
 \midrule
-\multirow{2}{*}{ML-DSA (Dilithium)} & Level 3 (3) & 1.62x & 1.45x \\
+\multirow{2}{*}{ML-DSA} & Level 3 (3) & 1.62x & 1.45x \\
 & Level 5 (5) & 2.45x & 2.15x \\
 \bottomrule
 \end{tabular}
@@ -72,7 +71,7 @@ Investigating explicit operational bounds correlating Security Scale magnitudes 
 
 \subsection{Significant Differences in Architectures}
 
-Comprehensive single bound ANOVA F-testing calculations confirm distinct and undeniably substantial correlations ($p<0.001$) specifically delineating structural advantages separating classical Lattice systems apart entirely from recursive hash structures . Tukey's HSD test subsequently isolates explicit distinct mean differences separating Hash domains strictly from computationally optimized Module-LWE equivalents.
+Comprehensive single bound ANOVA F-testing calculations confirm distinct and undeniably substantial correlations ($p<0.001$) specifically delineating structural advantages separating classical Lattice systems apart entirely from recursive hash structures. Tukey's HSD test subsequently isolates explicit distinct mean differences separating Hash domains from computationally optimized Module-LWE equivalents.
 
 \begin{table}[htbp]
 \caption{Detailed Statistical ANOVA Summary}

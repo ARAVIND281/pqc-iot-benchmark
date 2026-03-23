@@ -7,7 +7,7 @@ To guarantee strict scientific reproducibility and validate our methodological a
 
 \subsection{Unix Constraint Isolation Wrapper (Python)}
 
-Algorithm \ref{alg:cgroup_sim} defines the strictly controlled boundary wrapper enforcing hardware limits utilizing Python's native POSIX resource daemon .
+Algorithm \ref{alg:cgroup_sim} defines the controlled boundary wrapper enforcing hardware limits utilizing Python's native POSIX resource daemon.
 
 \begin{algorithm*}[htbp]
 \caption{Deterministic C-Group Based Memory/Time Isolation Mapping (Python 3)}\label{alg:cgroup_sim}
@@ -70,7 +70,7 @@ The energy approximation engine evaluates physical bounds directly transforming 
 \State \texttt{def calculate\_total\_energy(latency\_ms, algo\_config, device\_profile):}
 \State \indent \texttt{"""}
 \State \indent \texttt{Calculates generic total Physical Energy (mJ) combining local calculations}
-\State \indent \texttt{against RF transmission packet sizes .}
+\State \indent \texttt{against RF transmission packet sizes.}
 \State \indent \texttt{"""}
 \State
 \State \indent \texttt{\# CPU Architectural Attributes (e.g., ARM Cortex-M4)}

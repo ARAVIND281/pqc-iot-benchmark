@@ -17,10 +17,10 @@ The most severe bottleneck within the TLS sequence manifests during the \texttt{
 
 \begin{itemize}
  \item \textbf{Classical Baseline:} An ECDSA-P256 certificate chain combined with the runtime signature totals roughly $500 - 800$ bytes, neatly fitting within a single UDP datagram for DTLS configurations.
- \item \textbf{Post-Quantum Dilemma:} Utilizing \dilithium{}-2 generates a $1,312$-byte public key and a $2,420$-byte signature . The resulting \texttt{CertificateVerify} payload exceeds $4$ KB. 
+ \item \textbf{Post-Quantum Dilemma:} Utilizing \dilithium{}-2 generates a $1,312$-byte public key and a $2,420$-byte signature. The resulting \texttt{CertificateVerify} payload exceeds $4$ KB. 
 \end{itemize}
 
-This forces lower OSI layer protocols (e.g., 6LoWPAN) to execute intense packet fragmentations. Transmitting a 4 KB payload over a 127-byte 802.15.4 conduit requires roughly 40 distinct MAC-layer frames. In standard IoT networks featuring a mild 5\% packet loss coefficient, the mathematical probability of successfully receiving all 40 unacknowledged frames sequentially drops substantially. If intermediate routing nodes drop a single fragment, the entire TLS handshake fails, necessitating a full re-transmission cycle consuming exponential network energy bounds.
+This forces lower OSI layer protocols (e.g., 6LoWPAN) to execute intense packet fragmentations. Transmitting a 4 KB payload over a 127-byte 802.15.4 conduit requires roughly 40 distinct MAC-layer frames. In standard IoT networks featuring a mild 5\% packet loss coefficient, the mathematical probability of successfully receiving all 40 unacknowledged frames sequentially drops significantly. If intermediate routing nodes drop a single fragment, the entire TLS handshake fails, necessitating a full re-transmission cycle consuming exponential network energy bounds.
 
 \begin{table}[htbp]
 \caption{Network Communication Overhead and Fragmentation Scaling}
@@ -47,9 +47,9 @@ ECDHE-X25519 & 64 & 1 & 1 \\
 
 \subsection{The "KEMTLS" Alternative Framework}
 
-To circumvent the signature payload crisis, literature increasingly investigates the KEMTLS framework—a sequence strictly utilizing Key Encapsulation Mechanisms (KEMs) for both ephemeral secrecy \textit{and} explicit authentication, completely stripping heavy digital signatures (ML-DSA / SLH-DSA) from the handshake layer.
+To circumvent the signature payload crisis, literature increasingly investigates the KEMTLS framework—a sequence utilizing Key Encapsulation Mechanisms (KEMs) for both ephemeral secrecy \textit{and} explicit authentication, completely stripping heavy digital signatures (ML-DSA / SLH-DSA) from the handshake layer.
 
-KEMTLS authenticates servers by embedding their long-term KEM public key within the certificate. The client generates an ephemeral secret, encapsulates it directly under the server's public key, and transmits the resulting ciphertext. Since \kyber{}-512 ciphertexts are strictly 768 bytes (drastically smaller than a 2,420-byte \dilithium{}-2 signature), KEMTLS circumvents significant datagram fragmentation. 
+KEMTLS authenticates servers by embedding their long-term KEM public key within the certificate. The client generates an ephemeral secret, encapsulates it directly under the server's public key, and transmits the resulting ciphertext. Since \kyber{}-512 ciphertexts are 768 bytes (drastically smaller than a 2,420-byte \dilithium{}-2 signature), KEMTLS circumvents significant datagram fragmentation. 
 
 However, delegating authentication to KEMs shifts the computational burden. The server is forced to execute a heavy Decapsulation operation sequentially simply to authenticate the connection, exposing the infrastructure to highly asymmetrical Denial-of-Service (DoS) attacks where cheap client `ClientHello` connections trigger substantial CPU cycles on backend IoT edge-gateways.
 
@@ -96,7 +96,7 @@ However, delegating authentication to KEMs shifts the computational burden. The 
 Classical (ECDHE + ECDSA) & 7.20 & 6.80 & 14.00 \\
 \kyber{}-512 + \dilithium{}-2 & 5.14 & 14.22 & 19.36 \\
 \kyber{}-768 + \dilithium{}-3 & 8.41 & 21.95 & 30.36 \\
-\kyber{}-512 + \falcon{}-512   & 3.82 & 2.10  & 5.92  \\
+\kyber{}-512 + \falcon{}-512 & 3.82 & 2.10 & 5.92 \\
 \kyber{}-512 + \sphincs{}-128f & 11.20 & 540.54 & 551.74 \\
 \bottomrule
 \end{tabular}

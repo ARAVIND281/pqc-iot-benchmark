@@ -7,9 +7,9 @@ This section comprehensively formalizes the algorithmic structures guiding our d
 
 \subsection{Experimental Setup and Simulation Validity}
 
-A primary critique of broad benchmarking frameworks centers on the authenticity gap bridging synthetic instruction counts versus genuine hardware clock cycles. While previous literature \cite{secrypt2025esp32, lopez2025post} extensively targets singular microcontrollers executing bare-metal binaries, our simulation methodology intrinsically mitigates this variance.
+A primary critique of broad benchmarking frameworks centers on the authenticity gap bridging synthetic instruction counts versus genuine hardware clock cycles. While previous literature \cite{secrypt2025esp32, lopez2025post} targets singular microcontrollers executing bare-metal binaries, our simulation methodology mitigates this variance.
 
-Specifically, we synthesize baseline CPU cycles directly from the meticulously hand-optimized, cycle-accurate \texttt{pqm4} assembly routines \cite{kannwischer2019pqm4} generated strictly for ARM Cortex-M4 architectures, the de facto standard embedded microprocessor. Utilizing Python's \texttt{resource.setrlimit} upon Unix-based test harnesses, we programmatically confine maximal resident set size (RSS) allocations strictly adhering to RFC 7228 memory boundaries. By superimposing Gaussian variances corresponding to stochastic operating system thread interruption upon these optimized baseline architectures, we execute a vastly accelerated and scalable test harness generating tens of thousands of measurements fully aligned with realistic embedded behavior while averting hardware-in-the-loop firmware compilation bottlenecks.
+Specifically, we synthesize baseline CPU cycles directly from the meticulously hand-optimized, cycle-accurate \texttt{pqm4} assembly routines \cite{kannwischer2019pqm4} generated for ARM Cortex-M4 architectures, the de facto standard embedded microprocessor. To circumvent basic $O(N^2)$ convolution complexity, lattice algorithms mandate the use of the Number Theoretic Transform (NTT), dropping multiplication complexity to $O(N \log N)$. However, on Cortex-M0 (Class 0) and Cortex-M4 (Class 1/2) embedded devices, executing 256-point NTT algorithms demands significant register availability. Since $q=3329$ admits a 256-th root of unity $\zeta$, polynomials are decomposed into 128 linear polynomials. While highly optimized in assembly (utilizing M4's DSP extensions like \texttt{SMLAD}), simulating this constrained execution profile requires accurately bounding maximal resident set size (RSS) allocations strictly adhering to RFC 7228 memory boundaries via Python's \texttt{resource.setrlimit}. By superimposing Gaussian variances corresponding to stochastic operating system thread interruption upon these optimized baseline architectures, we execute a vastly accelerated and scalable test harness generating tens of thousands of measurements fully aligned with realistic embedded behavior while averting hardware-in-the-loop firmware compilation bottlenecks.
 
 \subsection{Algorithms Under Evaluation}
 
@@ -67,6 +67,31 @@ AES-128 & Symmetric & 16 & Resilient (Grover) \\
 \bottomrule
 \end{tabular}
 \end{table}
+
+\begin{table}[htbp]
+\caption{Classical Benchmark Results (Class 2 Baseline)}
+\label{tab:classical_bench}
+\centering
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Algorithm} & \textbf{KeyGen (ms)} & \textbf{Op1 (ms)} & \textbf{Peak Memory (KB)} & \textbf{Energy (mJ)} \\
+\midrule
+RSA-2048 & 850.00 & 2.10 (sign) & 8.2 & 420.0 \\
+RSA-3072 & 2,100.00 & 3.80 (sign) & 12.5 & 1,050.0 \\
+ECDSA-P256 & 1.20 & 1.80 (sign) & 1.8 & 0.9 \\
+ECDH-P256 & 2.10 & 2.10 (exchange) & 1.6 & 1.1 \\
+AES-128-GCM & 0.01 & 0.02 (encrypt) & 0.4 & 0.008 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Evaluating these parameters explicitly extracts critical \textbf{Migration Overhead Factors}:
+\begin{itemize}
+ \item \textbf{ML-KEM-512 vs ECDH-P256:} 4.0$\times$ slower, 8.9$\times$ more memory, 3.5$\times$ more energy.
+ \item \textbf{ML-DSA-2 vs ECDSA-P256:} 8.4$\times$ slower, 18$\times$ more memory, 13.8$\times$ more energy.
+ \item \textbf{SLH-DSA-128f vs ECDSA-P256:} 617$\times$ slower signing, 36$\times$ more memory.
+\end{itemize}
+These concrete ratios constrain the hardware transition boundaries explored thoroughly across Section~\ref{sec:results}.
 
 \subsection{Formal Benchmarking Architecture}
 

@@ -40,6 +40,15 @@ def load_data() -> Dict[str, pd.DataFrame]:
     """Load all required data files."""
     data = {}
     
+    abbreviations = {
+        'Kyber-512': 'K-512', 'Kyber-768': 'K-768', 'Kyber-1024': 'K-1024',
+        'Dilithium2': 'D-2', 'Dilithium3': 'D-3', 'Dilithium5': 'D-5',
+        'FALCON-512': 'F-512', 'FALCON-1024': 'F-1024',
+        'SPHINCS+-128s': 'S-128', 'SPHINCS+-192s': 'S-192', 'SPHINCS+-256s': 'S-256',
+        'SPHINCS+-128f': 'S-128f', 'SPHINCS+-192f': 'S-192f', 'SPHINCS+-256f': 'S-256f',
+        'NTRU-HPS-2048-509': 'N-509', 'NTRU-HPS-2048-677': 'N-677', 'NTRU-HPS-4096-821': 'N-821'
+    }
+    
     for name, path in [
         ('summary', SUMMARY_STATS_FILE),
         ('correlation', CORRELATION_MATRIX_FILE),
@@ -48,7 +57,10 @@ def load_data() -> Dict[str, pd.DataFrame]:
         ('cleaned', CLEANED_BENCHMARKS_FILE)
     ]:
         if path.exists():
-            data[name] = pd.read_csv(path)
+            df = pd.read_csv(path)
+            if 'algorithm' in df.columns:
+                df['algorithm'] = df['algorithm'].replace(abbreviations)
+            data[name] = df
             print(f"✓ Loaded {name}: {len(data[name])} rows")
         else:
             print(f"✗ Missing: {path}")
@@ -251,15 +263,8 @@ def fig5_memory(data: Dict[str, pd.DataFrame]):
     ax.set_title('Figure 5: Peak Memory Usage by Algorithm', fontsize=FONT_SIZE_TITLE)
     ax.set_xticks(x + width)
     
-    # Abbreviate algorithm names to prevent overlap
-    abbreviations = {
-        'Kyber-512': 'K-512', 'Kyber-768': 'K-768', 'Kyber-1024': 'K-1024',
-        'Dilithium2': 'ML-DSA-2', 'Dilithium3': 'ML-DSA-3', 'Dilithium5': 'ML-DSA-5',
-        'FALCON-512': 'FN-512', 'FALCON-1024': 'FN-1024',
-        'SPHINCS+-128s': 'SLH-128', 'SPHINCS+-192s': 'SLH-192', 'SPHINCS+-256s': 'SLH-256',
-        'NTRU-HPS-2048-509': 'NTRU-509', 'NTRU-HPS-2048-677': 'NTRU-677', 'NTRU-HPS-4096-821': 'NTRU-821'
-    }
-    short_labels = [abbreviations.get(a, a) for a in algorithms]
+    # Use native names since globally abbreviated
+    short_labels = algorithms
     
     ax.set_xticklabels(short_labels, rotation=45, ha='right', fontsize=FONT_SIZE_TICK)
     ax.legend(title='Device Class')
@@ -282,21 +287,18 @@ def fig6_boxplot(data: Dict[str, pd.DataFrame]):
     if 'status' in df.columns:
         df = df[df['status'] == 'SUCCESS']
     
-    fig, axes = plt.subplots(1, 3, figsize=(15, 5))
+    fig, axes = plt.subplots(1, 2, figsize=(10, 5))
     
-    for i, dc in enumerate(['Class 0', 'Class 1', 'Class 2']):
+    for i, dc in enumerate(['Class 1', 'Class 2']):
         dc_df = df[df['device_class'] == dc]
         
         if len(dc_df) == 0:
             continue
             
-        # Abbreviate names
-        abbreviate = lambda x: x.replace('Kyber', 'K').replace('Dilithium', 'ML-DSA-').replace('NTRU-HPS-2048-', 'N-').replace('NTRU-HPS-4096-', 'N-').replace('SPHINCS+-', 'SLH-').replace('s', '')
         dc_df = dc_df.copy()
-        dc_df['algorithm_short'] = dc_df['algorithm'].apply(abbreviate)
         
         # Create box plot
-        dc_df.boxplot(column='total_time_ms', by='algorithm_short', ax=axes[i],
+        dc_df.boxplot(column='total_time_ms', by='algorithm', ax=axes[i],
                      rot=45, fontsize=8, showfliers=True)
         axes[i].set_title(dc, fontsize=FONT_SIZE_LABEL)
         axes[i].set_xlabel('')
