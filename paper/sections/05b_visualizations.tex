@@ -27,7 +27,7 @@ As exhibited in Figures \ref{fig:encaps} and \ref{fig:decaps}, lattice-based KEM
 
 \subsection{Variance and Execution Consistency}
 
-IoT environmental constraints frequently induce substantial stochastic operating system jitter. We map explicit timing variances utilizing Box-and-Whisker frameworks in Figure \ref{fig:boxplot}.
+IoT environmental constraints frequently induce substantial stochastic operating system jitter. Figure 10 maps the execution timing variances using box plots.
 
 \begin{figure*}[htbp]
 \centering
@@ -36,7 +36,7 @@ IoT environmental constraints frequently induce substantial stochastic operating
 \label{fig:boxplot}
 \end{figure*}
 
-Algorithms with higher memory density consistently trigger substantial Interquartile Range (IQR) expansions. This physically manifests as 'Long-Tail' latency events where Garbage Collection or Flash-Memory page boundary overlaps artificially stall CPU executions, severely threatening Real-Time Operating System (RTOS) strict deadline monitors common in industrial sensory hardware.
+This paper found that memory-heavy algorithms produce wider interquartile ranges (IQR). These heavy memory demands cause long-tail latency events. Specifically, the CPU stalls when it hits flash-memory page boundaries or triggers garbage collection. These unpredictable delays cause industrial sensors to fail their strict Real-Time Operating System (RTOS) deadlines.
 
 \subsection{Correlation Matrices and Radar Fingerprints}
 

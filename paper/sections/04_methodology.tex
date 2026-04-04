@@ -3,11 +3,11 @@
 \label{sec:methodology}
 %-----------------------------------------------------------------------
 
-This section comprehensively formalizes the algorithmic structures guiding our data acquisition and mathematical models quantifying IoT constraints.
+In this part of the paper we Formulates the algorithm this paper used for data acquisition and mathematical models quantifying IoT constraints.
 
 \subsection{Experimental Setup and Simulation Validity}
 
-A primary critique of broad benchmarking frameworks centers on the authenticity gap bridging synthetic instruction counts versus genuine hardware clock cycles. While previous literature \cite{secrypt2025esp32, lopez2025post} targets singular microcontrollers executing bare-metal binaries, our simulation methodology mitigates this variance.
+To the main objection of benchmarking frameworks on the authenticity gap bridging synthetic instruction counts versus genuine hardware clock cycles. In previous literature \cite{secrypt2025esp32, lopez2025post} targets singular microcontrollers executing bare-metal binaries, our simulation methodology mitigates this variance.
 
 Specifically, we synthesize baseline CPU cycles directly from the meticulously hand-optimized, cycle-accurate \texttt{pqm4} assembly routines \cite{kannwischer2019pqm4} generated for ARM Cortex-M4 architectures, the de facto standard embedded microprocessor. To circumvent basic $O(N^2)$ convolution complexity, lattice algorithms mandate the use of the Number Theoretic Transform (NTT), dropping multiplication complexity to $O(N \log N)$. However, on Cortex-M0 (Class 0) and Cortex-M4 (Class 1/2) embedded devices, executing 256-point NTT algorithms demands significant register availability. Since $q=3329$ admits a 256-th root of unity $\zeta$, polynomials are decomposed into 128 linear polynomials. While highly optimized in assembly (utilizing M4's DSP extensions like \texttt{SMLAD}), simulating this constrained execution profile requires accurately bounding maximal resident set size (RSS) allocations strictly adhering to RFC 7228 memory boundaries via Python's \texttt{resource.setrlimit}. By superimposing Gaussian variances corresponding to stochastic operating system thread interruption upon these optimized baseline architectures, we execute a vastly accelerated and scalable test harness generating tens of thousands of measurements fully aligned with realistic embedded behavior while averting hardware-in-the-loop firmware compilation bottlenecks.
 

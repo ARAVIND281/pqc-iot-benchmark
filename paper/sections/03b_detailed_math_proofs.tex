@@ -27,14 +27,14 @@ requires $\mathcal{O}(n^2)$ integer multiplications. To bypass this within Corte
 \begin{equation}
 c = \text{INTT}(\text{NTT}(a) \circ \text{NTT}(b))
 \end{equation}
-where $\circ$ is pointwise multiplication. The forward NTT evaluates a polynomial $a(X)$ at the $n$ primitive roots of unity modulo $q$. The Cooley-Tukey butterfly algorithm reduces this to $\mathcal{O}(n \log n)$. However, the Cortex-M0 (Class 0 architecture) lacks the 32-bit fast multiply-accumulate (\texttt{MAC}) instructions required to rapidly execute the Barrett or Montgomery reductions necessary after every butterfly addition, explaining the profound latency divergence between C1 (Cortex-M0) and C2 (Cortex-M4) endpoints graphed in Figure \ref{fig:keygen_time}.
+where $\circ$ is pointwise multiplication. The forward NTT that evaluates a polynomial $a(X)$ at the $n$ primitive roots of unity modulo $q$. The Cooley-Tukey butterfly algorithm reduces this to $\mathcal{O}(n\log n)$. But, the Cortex-M0 (Class 0 architecture) lacks the 32-bit fast multiply-accumulate (\texttt{MAC}) instructions that required to process the Barrett/Montgomery reductions necessary after every butterfly addition, explaining the large difference in latency between C1 (Cortex-M0) and C2 (Cortex-M4) endpoints graphed in Figure \ref{fig:keygen_time}.
 
 \subsection{Formalization of Hash-Based Trees (SLH-DSA)}
 
-Unlike LWE, SLH-DSA secures upon generic collision-resistant cryptographic hashing boundaries. The algorithmic structure constructs a stateful signature tree defined by height $h = h' \cdot d$, containing $d$ interconnected levels.
+Unlike LWE, SLH-DSA secures relies on the security of collision-resistant hash functions. The algorithmic structure constructs a stateful signature tree defined by height $h = h' \cdot d$, containing $d$ interconnected levels.
 
-The core signature size penalty on the network fragment (often reaching 17-49 KB) is calculated mathematically as the sum of a Few-Time Signature (FORS) plus $d$ distinct Merkle paths.
+The core signature size penalty on the Bandwidth overhead (17-49 KB) is sum of a Few-Time Signature (FORS) plus $d$ distinct Merkle paths.
 \begin{equation}
 |\sigma| \approx \text{len}(\text{FORS}) + d \cdot \left( \frac{h}{d} \right) \cdot n
 \end{equation}
-where $n$ represents the security parameter (e.g., $n=16$ bytes for Level 1). The IoT node must evaluate $2^{h/d}$ Winternitz One-Time Signatures (WOTS+) locally just to generate a single intermediate Merkle tree root. In constrained RAM ($<50$ KB), standard implementations cannot cache these intermediate hash states. Therefore, the algorithm is forced into a purely stateless configuration, recalculating equivalent hash boundaries continuously from the master seed. This $O(2^h)$ deterministic recalculation loop physically manifests as the 5,000+ millisecond threshold isolated at runtime during Class 1 benchmark executions.
+where $n$ represents the security parameter (e.g., $n=16$ bytes for Level 1). The IoT node must evaluate $2^{h/d}$ Winternitz One-Time Signatures (WOTS+) locally just to generate a single intermediate Merkle tree root. In constrained RAM ($<50$ KB), standard implementations cannot cache these intermediate hash states. Therefore, the algorithm is forced into a purely stateless configuration, recalculating equivalent tree nodes continuously from the master seed. This $O(2^h)$ deterministic recalculation loop causes the 5,000+ ms delay observed in our benchmarks. during Class 1 benchmark executions.

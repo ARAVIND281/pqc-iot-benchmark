@@ -12,13 +12,13 @@ The security of lattice-based mechanisms anchors on Learning With Errors (LWE) a
 
 \textbf{ML-KEM (FIPS 203)} operates over the ring $R_q = \mathbb{Z}_q[X]/(X^{256} + 1)$ with $q = 3329$. It provides efficient key encapsulation but demands substantial register availability for polynomial multiplications. 
 
-\textbf{ML-DSA (FIPS 204)} operates symmetrically to ML-KEM but adopts the ``Fiat-Shamir with Aborts'' framework. During signing, to prevent secret key leakage, the signature is rejected and restarted if coefficients exceed predefined bounds (rejection sampling). This non-deterministic loop drains energy reserves rapidly on Class 1 devices lacking large CPU caches, while keys exceed 2.5 KB, demanding fragmented transmission.
+\textbf{ML-DSA (FIPS 204)} is similar to ML-KEM, except it utilizes the "Fiat Shamir with Aborts" method. It rejects random coefficients when they go over certain limits while producing a signature. It starts over to ensure secret key leakage is not compromised. This non-deterministic algorithm can consume considerable power for Class 1 devices, especially when the CPU cache is limited. Moreover, when key sizes go over 2.5 KB, they become fragmented.
 
 \subsubsection{\ntru{} Lattices and FN-DSA}
-\textbf{FN-DSA (Draft FIPS 206)}\footnote{NIST FIPS 206 remains a draft standard pending finalization of specifications.} solves the signature size dilemma of ML-DSA (reducing sizes to 666 bytes for 128-bit security) by utilizing dense \ntru{} lattices \cite{hoffstein1998ntru}. However, generating signatures requires continuous Gaussian sampling over high-precision floating-point arithmetic. 
+\textbf{FN-DSA (Draft FIPS 206)}\footnote{NIST FIPS 206 remains a draft standard pending finalization of specifications.} overcomes the issue of signature size, which is a limitation in ML-DSA, where the signature is reduced to 666 bytes to achieve 128-bit security strength. This is done through dense lattices \cite{hoffstein1998ntru}. However, the signature generation is continuous, involving Gaussian sampling in high-precision floating-point arithmetic. 
 
 \subsubsection{Hash-Based Signatures (SLH-DSA)}
-\textbf{SLH-DSA (FIPS 205)} secures digital signatures upon proven hash function properties (e.g., SHA-256), circumventing unproven algebraic constructs \cite{bernstein2019sphincs}. It constructs a hyper-tree combining Few-Time Signatures (FORS) and eXtended Merkle Signature Schemes (XMSS). While mathematically conservative, the resulting signature encapsulates the entire authentication path. An SLH-DSA-128s signature consumes roughly 8 KB, rendering it hostile to Class 1 UDP/CoAP constrained endpoints.
+\textbf{SLH-DSA (FIPS 205)} secures digital signatures upon proven hash function properties (e.g., SHA-256), circumventing unproven algebraic constructs \cite{bernstein2019sphincs}. It constructs a hyper-tree combining "Few-Time Signatures" (FORS) and "eXtended Merkle Signature Schemes" \cite{bernstein2019sphincs}.
 
 \subsubsection{Code-Based Cryptography (HQC)}
 \textbf{HQC} derives security from the syndrome decoding problem \cite{nist2025hqc}. It bypasses NTT convolutions entirely, opting for simpler vector additions over finite fields GF(2), offering ultra-low power execution despite large public keys.
