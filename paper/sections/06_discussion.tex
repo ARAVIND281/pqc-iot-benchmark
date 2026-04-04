@@ -5,7 +5,7 @@
 
 \subsection{TOPSIS Decision Framework}
 
-Evaluating speed, energy, and overhead simultaneously is difficult. We apply the TOPSIS framework \cite{hwang1981multiple} to solve this. This method ranks the algorithms mathematically. It finds the option closest to the ideal solution ($v^+$). It also maximizes the distance from the worst-case scenario ($v^-$).
+Picking the 'best' algorithm is ill-defined when speed, memory, energy, key size, and security level all matter and all conflict. We use TOPSIS \cite{hwang1981multiple} to collapse this five-dimensional trade-off into a single scalar ranking. The method computes each algorithm's Euclidean distance from the ideal point (best value on every axis) and the anti-ideal point (worst on every axis), then ranks by the ratio $D^- / (D^+ + D^-)$. An algorithm scoring $C_i \approx 1$ is nearly ideal; $C_i \approx 0$ is dominated on every front.
 
 \begin{algorithm}
 \caption{TOPSIS Calculation Routine}\label{alg:topsis}
