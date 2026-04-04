@@ -93,7 +93,7 @@ These concrete ratios constrain the hardware transition boundaries explored thor
 
 \subsection{Formal Benchmarking Architecture}
 
-For each unique intersection spanning $A_i$ (an algorithm configuration) and $C_j$ (an RFC 7228 device class), we execute a structured iteration protocol measuring total wall-clock execution time and bounding RSS heap allocations. 
+Hardware profiling requires strict isolation. For every algorithmic configuration tested against an RFC 7228 device tier, we deployed a structured test harness. Our protocol doesn't just measure wall-clock execution time; it actively forces the host kernel to enforce RSS heap allocation ceilings during operation. 
 
 \begin{algorithm}
 \caption{Core Benchmarking Protocol Lifecycle}\label{alg:bench}
@@ -118,7 +118,7 @@ For each unique intersection spanning $A_i$ (an algorithm configuration) and $C_
 
 \subsection{Statistical Cleaning Framework}
 
-Raw empirical datasets innately capture disruptive environmental operating system interrupts. We employ stringent unsupervised outliner detection protocols driven by Interquartile Range (IQR) calculations prior to rendering significance testing matrices.
+Raw data is inherently dirty. OS-level interrupts inevitably jitter execution timings. Before piping results into our ANOVA matrices, we scrubbed the traces using a rigorous, unsupervised Interquartile Range (IQR) filter to aggressively purge these environmental stochastic anomalies.
 
 \begin{algorithm}
 \caption{IQR Metric Outlier Purge}\label{alg:iqr}

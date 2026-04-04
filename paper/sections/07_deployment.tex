@@ -64,7 +64,7 @@ Figure \ref{fig:feasibility} defines valid architectural boundaries directly enc
 
 \subsection{Case Study: V2X Automotive Telemetry and Edge Computing}
 
-To firmly physicalize these deployment heuristics, we evaluate the strict chronological boundaries mandated by Vehicle-to-Everything (V2X) infrastructure. Autonomous and highly-connected vehicular frameworks transmit Basic Safety Messages (BSMs) via Dedicated Short-Range Communications (DSRC) broadcasting precisely at $10\text{Hz}$ (every 100 milliseconds). Each BSM \textit{must} be cryptographically authenticated to prevent significant spoofing vectors initiating phantom braking scenarios.
+These operational heuristics mean nothing in a vacuum. Consider automotive Vehicle-to-Everything (V2X) infrastructure. Connected vehicles continuously stream Basic Safety Messages (BSMs) over DSRC radios at a relentless 10 Hz pulse. Cryptographic authentication on each frame is absolutely non-negotiable—a single spoofed message risks triggering catastrophic autonomous phantom braking.
 
 Under classical 256-bit Elliptic Curve constraints, ECDSA generates a 64-byte payload verifiably under 2 milliseconds on standard automotive Electronic Control Units (ECUs). However, post-quantum migration mandates utilizing ML-DSA or SLH-DSA.
 

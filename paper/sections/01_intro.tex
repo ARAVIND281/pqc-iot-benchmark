@@ -16,19 +16,17 @@ IoT is where the post-quantum migration will hurt most. The ecosystem — projec
 \label{fig:migration_cost}
 \end{figure}
 
-However, the transition from classical cryptography to post-quantum cryptography, which is based on lattices, hash trees, and codes, is associated with considerable overhead, which is in direct conflict with IoT devices. This is because public keys and signatures in post-quantum cryptography are significantly larger than ECC-based public keys and signatures, resulting in fragmentation of the TLS handshake at the network stack. Moreover, the complex matrix calculations in post-quantum cryptography accelerate the depletion of device power.
+The looming shift from classical RSA/ECC foundations toward lattice and hash-based constructions isn't merely a mathematical update; for IoT architects, it's a fundamental resource collision. While NIST's August 2024 finalization of FIPS 203–205 provided the standard, the operational reality on Class 0–2 hardware remains largely unmapped. Our investigation addresses this by moving beyond simple execution-time metrics to establish a unified energy-drain profile—factoring in both the localized 'compute cost' of matrix arithmetic and the 'radio cost' of transmitting bloated PQC payloads.
 
 \subsection{Novelty and Research Gap}
 
 The pqm4 project \cite{kannwischer2019pqm4} benchmarked Cortex-M4 assembly. Fitzgibbon and Ottaviani \cite{fitzgibbon2024benchmarking} extended this to Raspberry Pi Linux targets. Silva et al. \cite{secrypt2025esp32} tested ESP32 under FreeRTOS. Each study profiled a subset of algorithms on a single hardware tier. None mapped the full algorithm suite — ML-KEM, ML-DSA, FN-DSA, SLH-DSA, and NTRU — across all three RFC 7228 classes simultaneously, and none combined execution profiling with RF energy modeling or formal multi-criteria ranking.
 
-In addition, existing literature is heavily weighted towards execution time while largely failing to assess unified models of energy consumption, i.e., computation and radio transmission, and deterministic multi-criteria algorithm selection guidelines.
-
-In terms of addressing the above unmapped intersections, the following questions are examined in this paper: With the latest standardized algorithms defined by NIST, what schemes are viable for specific classes of IoT devices, and what is the relative cost to classical cryptography, and what are the trade-offs?
+With the latest standardized algorithms defined by NIST, what schemes are viable for specific classes of IoT devices, and what is the relative cost to classical cryptography, and what are the trade-offs?
 
 \subsection{Contributions}
 
-This paper address this gaps and our contributions are:
+Our contributions address this collision directly:
 \begin{enumerate}
  \item \textbf{Comprehensive Cross-Class Benchmarking:} We ran 45,000+ measurement iterations across 14 parameter configurations, enforcing strict C0/C1/C2 memory ceilings via OS-level resource limits to simulate genuine RFC 7228 hardware.
  \item \textbf{Expanded Energy and Communication Analysis:} We propose a unified energy estimation model that accounts for microcontroller cycle drain and radio frequency transmission overheads of inflated PQC key sizes.
