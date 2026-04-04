@@ -292,6 +292,12 @@ def fig6_boxplot(data: Dict[str, pd.DataFrame]):
         dc_df = df[df['device_class'] == dc]
         
         if len(dc_df) == 0:
+            axes[i].set_title(dc, fontsize=FONT_SIZE_LABEL)
+            axes[i].text(0.5, 0.5, 'All instantiations INFEASIBLE\n(Constraints Exceeded)', 
+                         ha='center', va='center', fontsize=10, style='italic',
+                         transform=axes[i].transAxes)
+            axes[i].set_xticks([])
+            axes[i].set_yticks([])
             continue
             
         dc_df = dc_df.copy()
