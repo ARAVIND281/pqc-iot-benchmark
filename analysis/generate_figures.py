@@ -133,8 +133,8 @@ def fig1_framework_architecture():
         ax.annotate('', xy=(5, 1.5), xytext=(x, 2.5),
                    arrowprops=arrow_props)
     
-    ax.set_title('Figure 1: PQC IoT Benchmarking Framework Architecture',
-                fontsize=14, fontweight='bold', pad=20)
+    ax.set_title('Comprehensive PQC Evaluation Testbed Framework. The architecture spans from bare-metal \\ncode execution through OS-level kernel isolations ultimately concluding within \\nhigh-level statistical modeling engines uniformly.',
+                fontsize=11, fontweight='bold', pad=20)
     
     plt.tight_layout()
     plt.savefig(FIGURE_FILES['fig1_framework'], dpi=FIGURE_DPI, bbox_inches='tight')
@@ -145,7 +145,7 @@ def fig1_framework_architecture():
 def fig2_keygen_time(data: Dict[str, pd.DataFrame]):
     """Figure 2: Key generation time comparison."""
     _generate_time_comparison_chart(
-        data, 'keygen_time_ms', 'Key Generation Time',
+        data, 'keygen_time_ms', 'Key generation latency plotted logarithmically across simulated architecture groupings.\\nClassical counterparts map consistently closer to zero bounds.',
         FIGURE_FILES['fig2_keygen_time'], 'fig2_keygen_time.png'
     )
 
@@ -153,7 +153,7 @@ def fig2_keygen_time(data: Dict[str, pd.DataFrame]):
 def fig3_encaps_time(data: Dict[str, pd.DataFrame]):
     """Figure 3: Encapsulation/signing time comparison."""
     _generate_time_comparison_chart(
-        data, 'encaps_time_ms', 'Encapsulation/Signing Time',
+        data, 'encaps_time_ms', 'Encapsulation cycle latency across algorithms. Notice the distinct clustering\\nof Kyber tightly beneath 10ms thresholds globally.',
         FIGURE_FILES['fig3_encaps_time'], 'fig3_encaps_time.png'
     )
 
@@ -161,7 +161,7 @@ def fig3_encaps_time(data: Dict[str, pd.DataFrame]):
 def fig4_decaps_time(data: Dict[str, pd.DataFrame]):
     """Figure 4: Decapsulation/verification time comparison."""
     _generate_time_comparison_chart(
-        data, 'decaps_time_ms', 'Decapsulation/Verification Time',
+        data, 'decaps_time_ms', 'Decapsulation operations frequently consume slightly elevated computational overhead\\ncompared to Encapsulation uniformly.',
         FIGURE_FILES['fig4_decaps_time'], 'fig4_decaps_time.png'
     )
 
@@ -212,8 +212,7 @@ def _generate_time_comparison_chart(
     
     ax.set_xlabel('Algorithm', fontsize=FONT_SIZE_LABEL)
     ax.set_ylabel(f'{title_suffix} (ms)', fontsize=FONT_SIZE_LABEL)
-    ax.set_title(f'Figure: {title_suffix} by Algorithm and Device Class',
-                fontsize=FONT_SIZE_TITLE)
+    ax.set_title(title_suffix, fontsize=10)
     ax.set_xticks(x + width)
     ax.set_xticklabels(algorithms, rotation=45, ha='right', fontsize=FONT_SIZE_TICK)
     ax.legend(title='Device Class', loc='upper right')
@@ -260,7 +259,7 @@ def fig5_memory(data: Dict[str, pd.DataFrame]):
     
     ax.set_xlabel('Algorithm', fontsize=FONT_SIZE_LABEL)
     ax.set_ylabel('Peak Memory Usage (KB)', fontsize=FONT_SIZE_LABEL)
-    ax.set_title('Figure 5: Peak Memory Usage by Algorithm', fontsize=FONT_SIZE_TITLE)
+    ax.set_title('Peak memory utilization limits measured iteratively against strict hardware allocations.', fontsize=12)
     ax.set_xticks(x + width)
     
     # Use native names since globally abbreviated
@@ -311,8 +310,8 @@ def fig6_boxplot(data: Dict[str, pd.DataFrame]):
         if not pd.isna(min_val) and not pd.isna(max_val) and min_val > 0:
             axes[i].set_ylim(min_val * 0.5, max_val * 2.0)
     
-    fig.suptitle('Figure 6: Distribution of Total Execution Time', 
-                fontsize=FONT_SIZE_TITLE, y=1.02)
+    fig.suptitle('Boxplot distribution highlighting significant jitter anomalies distinctly present \\nin memory-heavy instantiations.', 
+                fontsize=11, y=1.02)
     
     plt.tight_layout()
     plt.savefig(FIGURE_FILES['fig6_boxplot'], dpi=FIGURE_DPI, bbox_inches='tight')
@@ -340,8 +339,8 @@ def fig7_correlation(data: Dict[str, pd.DataFrame]):
                annot_kws={'size': 9},
                cbar_kws={'label': 'Pearson Correlation'})
     
-    ax.set_title('Figure 7: Correlation Matrix of Performance Metrics',
-                fontsize=FONT_SIZE_TITLE)
+    ax.set_title('Pearson correlation matrix mapping the deterministic relationship\\nbetween metric payloads.',
+                fontsize=12)
     
     # Rotate labels
     plt.xticks(rotation=45, ha='right', fontsize=FONT_SIZE_TICK)
@@ -404,8 +403,8 @@ def fig8_radar(data: Dict[str, pd.DataFrame]):
     
     ax.set_xticks(angles[:-1])
     ax.set_xticklabels(metrics, fontsize=FONT_SIZE_TICK)
-    ax.set_title('Figure 8: Multi-dimensional Algorithm Comparison (Class 2)',
-                fontsize=FONT_SIZE_TITLE, pad=20)
+    ax.set_title('Multi-dimensional radar profiles isolating algorithmic strengths\\nacross five constraint dimensions simultaneously.',
+                fontsize=12, pad=20)
     ax.legend(loc='upper right', bbox_to_anchor=(1.3, 1.0))
     
     plt.tight_layout()
@@ -455,7 +454,7 @@ def fig9_feasibility(data: Dict[str, pd.DataFrame]):
     
     ax.set_xlabel('Device Class', fontsize=FONT_SIZE_LABEL)
     ax.set_ylabel('Algorithm', fontsize=FONT_SIZE_LABEL)
-    ax.set_title('Figure 9: Algorithm Feasibility Matrix', fontsize=FONT_SIZE_TITLE)
+    ax.set_title('Comprehensive structural feasibility mappings evaluating generic baseline conditions \\nsuccessfully correlating hardware intersections.', fontsize=11)
     
     # Add legend
     legend_elements = [
@@ -498,8 +497,8 @@ def fig10_topsis(data: Dict[str, pd.DataFrame]):
         axes[i].set_xlim(0, 1)
         axes[i].tick_params(axis='y', labelsize=8)
     
-    fig.suptitle('Figure 10: TOPSIS Algorithm Rankings by Device Class',
-                fontsize=FONT_SIZE_TITLE, y=1.02)
+    fig.suptitle('TOPSIS mathematical clustering outputs directly rating candidate viability linearly.',
+                fontsize=12, y=1.02)
     
     plt.tight_layout()
     plt.savefig(FIGURE_FILES['fig10_topsis'], dpi=FIGURE_DPI, bbox_inches='tight')
@@ -547,7 +546,7 @@ def fig11_tradeoff(data: Dict[str, pd.DataFrame]):
     
     ax.set_xlabel('Total Execution Time (ms)', fontsize=FONT_SIZE_LABEL)
     ax.set_ylabel('Peak Memory Usage (KB)', fontsize=FONT_SIZE_LABEL)
-    ax.set_title('Figure 11: Speed vs Memory Trade-off', fontsize=FONT_SIZE_TITLE)
+    ax.set_title('Execution complexity specifically mapped directly against requisite RF transmission \\noverheads dynamically outlining the operational landscape.', fontsize=11)
     ax.set_xscale('log')
     ax.set_yscale('log')
     ax.legend(title='Algorithm Family')
@@ -591,8 +590,8 @@ def fig12_energy(data: Dict[str, pd.DataFrame]):
     
     ax.set_xlabel('Algorithm', fontsize=FONT_SIZE_LABEL)
     ax.set_ylabel('Energy Consumption (mJ)', fontsize=FONT_SIZE_LABEL)
-    ax.set_title('Figure 12: Energy Consumption by Algorithm and Device Class',
-                fontsize=FONT_SIZE_TITLE)
+    ax.set_title('Comprehensive cumulative algorithmic energy expenditures\\ncorrelated uniformly across target hardware variants.',
+                fontsize=12)
     ax.set_xticks(x + width)
     ax.set_xticklabels(algorithms, rotation=45, ha='right', fontsize=FONT_SIZE_TICK)
     ax.set_yscale('log')
@@ -618,7 +617,7 @@ def fig13_cdf(data: Dict[str, pd.DataFrame]):
     ax.set_xscale('log')
     ax.set_xlabel('Total Execution Time (ms)', fontsize=FONT_SIZE_LABEL)
     ax.set_ylabel('Cumulative Probability', fontsize=FONT_SIZE_LABEL)
-    ax.set_title('Figure 13: CDF of Execution Times', fontsize=FONT_SIZE_TITLE)
+    ax.set_title('Cumulative Distribution Function (CDF) mapping the probabilistic probability\\nof generating output payload beneath distinct latency bounds.', fontsize=11)
     
     # Increase legend font size and clustering
     ax.legend(bbox_to_anchor=(1.05, 1), loc='upper left', fontsize=11, ncol=1 if len(df['algorithm'].unique()) <= 10 else 2)
@@ -647,7 +646,7 @@ def fig14_pareto(data: Dict[str, pd.DataFrame]):
     ax.set_yscale('log')
     ax.set_xlabel('NIST Security Level', fontsize=12)
     ax.set_ylabel('Resource Drain Cost (Log)', fontsize=12)
-    ax.set_title('Figure 14: Pareto Frontier (Resource Cost vs Security)', fontsize=14)
+    ax.set_title('Pareto Frontier analyzing global Resource Drain multipliers linearly\\nversus NIST security gradations identically.', fontsize=12)
     ax.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
     plt.tight_layout()
     plt.savefig(FIGURES_DIR / 'fig14_pareto.png', dpi=300, bbox_inches='tight')
@@ -673,7 +672,7 @@ def fig15_migration_cost(data: Dict[str, pd.DataFrame]):
     ax2.set_ylabel('Network Payload (Bytes)', color='#e74c3c', fontsize=12)
     ax1.set_xticks(x)
     ax1.set_xticklabels(labels, fontsize=11)
-    ax1.set_title('Figure 15: Classical vs PQC Migration Cost', fontsize=14)
+    ax1.set_title('The severe baseline computational and networking payload expansion\\ncharacterizing the post-quantum transition.', fontsize=12)
     
     lines1, labels1 = ax1.get_legend_handles_labels()
     lines2, labels2 = ax2.get_legend_handles_labels()
@@ -704,7 +703,7 @@ def fig16_memory_cascade(data: Dict[str, pd.DataFrame]):
     ax.set_xticks(x)
     ax.set_xticklabels(mem_df['algorithm'], rotation=45, ha='right', fontsize=9)
     ax.set_ylabel('Peak Memory (KB) - Log Scale', fontsize=12)
-    ax.set_title('Figure 16: Memory Threshold Cascade Analysis', fontsize=14)
+    ax.set_title('RFC 7228 memory cascade explicitly demarcating Class 0/1/2 viability boundaries.', fontsize=12)
     ax.legend()
     
     plt.tight_layout()
@@ -725,7 +724,7 @@ def fig17_tls_components(data: Dict[str, pd.DataFrame]):
     ax.bar(labels, [c_server, pqc_server], bottom=[c_client, pqc_client], label='Server', color='#e67e22')
     
     ax.set_ylabel('Latency (ms)', fontsize=12)
-    ax.set_title('Figure 17: TLS 1.3 Handshake Component Latency', fontsize=14)
+    ax.set_title('Server versus Client latency segmentation during standard handshakes\\nnatively highlighting KEM Decapsulation overhead processing.', fontsize=11)
     ax.legend()
     
     plt.tight_layout()
@@ -756,7 +755,7 @@ def fig18_energy_breakdown(data: Dict[str, pd.DataFrame]):
     ax.set_xticks(x)
     ax.set_xticklabels(algos, rotation=45, ha='right', fontsize=9)
     ax.set_ylabel('Total Energy (mJ)', fontsize=12)
-    ax.set_title('Figure 18: Energy Breakdown (CPU vs TX)', fontsize=14)
+    ax.set_title('Empirical energy split differentiating CPU processing drains\\nversus simulated RF transmission expenditures.', fontsize=12)
     ax.legend()
     
     plt.tight_layout()
@@ -781,7 +780,7 @@ def fig19_topsis_sensitivity(data: Dict[str, pd.DataFrame]):
     
     ax.set_xlabel('Memory Weighting Factor', fontsize=12)
     ax.set_ylabel('Time Weighting Factor', fontsize=12)
-    ax.set_title('Figure 19: TOPSIS Rank Sensitivity for Kyber-768', fontsize=14)
+    ax.set_title('Heatmap demonstrating mathematical configuration rigidity profiling Kyber-768\\nranking durability under variable criteria optimizations.', fontsize=11)
     
     plt.tight_layout()
     if 'fig19_topsis_sensitivity' in FIGURE_FILES:

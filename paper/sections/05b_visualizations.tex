@@ -12,14 +12,14 @@ While Figure \ref{fig:keygen_time} focused on initial derivation bounds, the act
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=\columnwidth]{fig3_encaps_time}
-\caption{Encapsulation cycle latency across algorithms. Notice the distinct clustering of \kyber{} tightly beneath 10ms thresholds globally.}
+\caption{Encapsulation Time by Algorithm and Device Class}
 \label{fig:encaps}
 \end{figure}
 
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=\columnwidth]{fig4_decaps_time}
-\caption{Decapsulation operations frequently consume slightly elevated computational overhead compared to Encapsulation uniformly.}
+\caption{Decapsulation Time by Algorithm and Device Class}
 \label{fig:decaps}
 \end{figure}
 
@@ -32,7 +32,7 @@ OS-level jitter is unavoidable on non-bare-metal platforms, and its magnitude de
 \begin{figure*}[htbp]
 \centering
 \includegraphics[width=\textwidth]{fig6_boxplot}
-\caption{Boxplot distribution highlighting significant jitter anomalies distinctly present in memory-heavy instantiations.}
+\caption{Distribution of Total Execution Time}
 \label{fig:boxplot}
 \end{figure*}
 
@@ -45,7 +45,7 @@ To analytically prove the independence of our target variables (Energy vs Memory
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=\columnwidth]{fig7_correlation}
-\caption{Pearson correlation matrix mapping the deterministic relationship between metric payloads.}
+\caption{Correlation Matrix of Performance Metrics}
 \label{fig:correlation}
 \end{figure}
 
@@ -54,7 +54,7 @@ Figure \ref{fig:correlation} reports the Pearson correlation matrix across all m
 \begin{figure*}[htbp]
 \centering
 \includegraphics[width=\textwidth]{fig8_radar}
-\caption{Multi-dimensional radar profiles isolating algorithmic strengths across five constraint dimensions simultaneously.}
+\caption{Multi-dimensional Algorithm Comparison (Class 2)}
 \label{fig:radar}
 \end{figure*}
 
@@ -67,7 +67,7 @@ Averages hide tail risk. Figure \ref{fig:cdf} plots the cumulative distribution 
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=\columnwidth]{fig13_cdf}
-\caption{Cumulative Distribution Function (CDF) mapping the probabilistic probability of generating output payload beneath distinct latency bounds.}
+\caption{CDF of Execution Times}
 \label{fig:cdf}
 \end{figure}
 
@@ -80,7 +80,7 @@ Every step up in NIST security level costs resources. The question is how steepl
 \begin{figure*}[htbp]
 \centering
 \includegraphics[width=\textwidth]{fig14_pareto}
-\caption{Pareto Frontier analyzing global Resource Drain multipliers linearly versus NIST security gradations identically.}
+\caption{Pareto Frontier (Resource Cost vs Security)}
 \label{fig:pareto}
 \end{figure*}
 
@@ -93,7 +93,7 @@ Finally, Figure \ref{fig:tradeoff} clusters algorithms logically by assessing pr
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=\columnwidth]{fig11_tradeoff}
-\caption{Execution complexity specifically mapped directly against requisite RF transmission overheads dynamically outlining the operational landscape.}
+\caption{Speed vs Memory Trade-off}
 \label{fig:tradeoff}
 \end{figure}
 
