@@ -91,6 +91,25 @@ Peak Memory & 456.2 & $<0.001$ & 0.75 \\
 \end{tabular}
 \end{table}
 
+\begin{table}[htbp]
+\caption{Tukey HSD Pairwise Significance ($p < 0.05$) for Class 2 Processing Total Time}
+\label{tab:tukey_hsd}
+\centering
+\resizebox{\columnwidth}{!}{
+\begin{tabular}{llccc}
+\toprule
+\textbf{Algorithm A} & \textbf{Algorithm B} & \textbf{Mean Diff (ms)} & \textbf{$p$-adj} & \textbf{Significant?} \\
+\midrule
+\kyber{}-512 & \kyber{}-768 & 10.70 & 1.0000 & No \\
+\kyber{}-1024 & \kyber{}-768 & -11.66 & 1.0000 & No \\
+\dilithium{}-2 & \dilithium{}-3 & 32.44 & 1.0000 & No \\
+\dilithium{}-2 & \falcon{}-512 & 742.98 & 1.0000 & No \\
+\dilithium{}-2 & \sphincs{}-128s & 499501.50 & 0.0000 & Yes \\
+\bottomrule
+\end{tabular}
+}
+\end{table}
+
 \subsection{Hybrid Classical-Quantum Scheme Dynamics}
 
 Lattice-based assumptions lack the multi-decade track record of RSA or ECC, so NIST recommends hybrid schemes that run classical and post-quantum key exchanges in parallel, concatenating both shared secrets through a KDF. The cost is steep. Table \ref{tab:hybrid_overhead} quantifies it: ECDHE + ML-KEM-512 takes 9.4 ms and 16.5 KB RAM on Class 2, roughly $2.2\times$ the pure classical baseline. Adding ML-DSA for authentication pushes RAM to 55.4 KB — already exceeding the Class 1 ceiling. Hybrid modes are viable only on Class 2 hardware with Ethernet-class MTUs ($\geq$ 1500 bytes); on 802.15.4 links, the combined 1,632-byte KEM payload alone demands 20 MAC-layer frames.

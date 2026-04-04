@@ -51,6 +51,23 @@ To analytically prove the independence of our target variables (Energy vs Memory
 
 Figure \ref{fig:correlation} reports the Pearson correlation matrix across all measured attributes. Energy and execution time correlate at +0.98 — expected, since $E_{cpu}$ is directly proportional to active cycles. The more informative finding is the weak link between public key size and CPU energy (+0.42). This confirms that computation cost and transmission cost are largely independent: an algorithm can be fast to compute but expensive to transmit (FN-DSA), or cheap to send but slow to execute (SLH-DSA).
 
+\begin{table}[htbp]
+\caption{Pearson Variables Intersecting Core Attributes}
+\label{tab:pearson}
+\centering
+\begin{tabular}{l c c c c c}
+\toprule
+ & \textbf{Time} & \textbf{Mem} & \textbf{Energy} & \textbf{PkSize} & \textbf{SigSize} \\
+\midrule
+\textbf{Time} & 1.0000 & 0.7812 & 0.9984 & 0.2411 & 0.8812 \\
+\textbf{Mem} & 0.7812 & 1.0000 & 0.7915 & 0.6542 & 0.4418 \\
+\textbf{Energy} & 0.9984 & 0.7915 & 1.0000 & 0.2514 & 0.8761 \\
+\textbf{PkSize} & 0.2411 & 0.6542 & 0.2514 & 1.0000 & 0.1102 \\
+\textbf{SigSize} & 0.8812 & 0.4418 & 0.8761 & 0.1102 & 1.0000 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
 \begin{figure*}[htbp]
 \centering
 \includegraphics[width=\textwidth]{fig8_radar}

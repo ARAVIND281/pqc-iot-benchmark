@@ -62,23 +62,5 @@ To ensure the deterministic and unbiased execution parameters framing Section \r
 \end{algorithmic}
 \end{algorithm*}
 
-\begin{table}[htbp]
-\caption{Tukey HSD Pairwise Significance ($p < 0.05$) for Class 2 Processing Total Time}
-\label{tab:tukey_hsd}
-\centering
-\resizebox{\columnwidth}{!}{
-\begin{tabular}{llccc}
-\toprule
-\textbf{Algorithm A} & \textbf{Algorithm B} & \textbf{Mean Diff (ms)} & \textbf{$p$-adj} & \textbf{Significant?} \\
-\midrule
-\kyber{}-512 & \kyber{}-768 & 10.70 & 1.0000 & No \\
-\kyber{}-1024 & \kyber{}-768 & -11.66 & 1.0000 & No \\
-\dilithium{}-2 & \dilithium{}-3 & 32.44 & 1.0000 & No \\
-\dilithium{}-2 & \falcon{}-512 & 742.98 & 1.0000 & No \\
-\dilithium{}-2 & \sphincs{}-128s & 499501.50 & 0.0000 & Yes \\
-\bottomrule
-\end{tabular}
-}
-\end{table}
 
 These constants and scripts are released alongside the paper to enable exact reproduction of every figure and table.
