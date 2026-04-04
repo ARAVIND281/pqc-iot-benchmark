@@ -50,7 +50,9 @@ Silva \cite{secrypt2025esp32} & FN-DSA-512 KeyGen (no FPU) & Time (ms) & $\appro
 
 \subsection{The Pareto Frontier}
 
-Investigating explicit operational bounds correlating Security Scale magnitudes uniformly towards Resource Drain delineates a distinct Pareto frontier where \kyber{}-512 dominates. Elevating security logic toward NIST Level 5 structures doubles baseline memory drains while compounding overall application timing cycles exponentially, yielding exceptionally minor residual efficiency buffers. \kyber{}-768 operates atop the Pareto boundary ensuring robust deployment profiles for explicit Level 3 environments while decisively avoiding boundary bottlenecks encountered by substantial algorithms including \sphincs{}.
+ML-KEM-512 dominates the TOPSIS ranking at NIST Level 1 ($C_i = 0.9452$ on Class 2, Table XVI) and remains competitive even against Level 3 alternatives. Stepping from Level 1 to Level 5 within the ML-KEM family roughly doubles both timing and memory (Table IX: 2.10$\times$ and 1.95$\times$ respectively). ML-DSA shows steeper scaling: 2.45$\times$ timing and 2.15$\times$ memory from Level 2 to Level 5. For Class 1 hardware, this scaling pushes ML-DSA-3 and above into OOM territory entirely.
+
+ML-KEM-768 occupies the sweet spot for deployments that need Level 3 security without the OOM risk — it completes in 12.85 ms on Class 2 and 72.85 ms on Class 1, well within typical DTLS timeout windows.
 
 \begin{table}[htbp]
 \caption{Non-Linear Scaling Factors across NIST Security Levels (Baseline = Level 1/2)}
@@ -71,7 +73,7 @@ Investigating explicit operational bounds correlating Security Scale magnitudes 
 
 \subsection{Significant Differences in Architectures}
 
-This paper ran an ANOVA F-test on the data. The results show a highly significant difference ($p < 0.001$). Classical Lattice systems structurally outperform recursive hash architectures. We then applied Tukey's HSD test. This isolated the exact performance gaps between the algorithms.
+The ANOVA F-test returned $p < 0.001$ for all four metrics — key generation, encapsulation, decapsulation, and peak memory — with effect sizes ($\eta^2$) between 0.75 and 0.91 (Table \ref{tab:anova}). Algorithm family, not parameter level, is the dominant factor. Tukey's HSD post-hoc test (Table \ref{tab:tukey_hsd}) confirms that the only statistically significant pairwise gap at $p < 0.05$ is between ML-DSA-2 and SLH-DSA-128f, where the mean difference exceeds 499 seconds. Within the ML-KEM family, differences of 10-12 ms between adjacent security levels are not significant after Bonferroni correction.
 
 \begin{table}[htbp]
 \caption{Detailed Statistical ANOVA Summary}
@@ -91,7 +93,7 @@ Peak Memory & 456.2 & $<0.001$ & 0.75 \\
 
 \subsection{Hybrid Classical-Quantum Scheme Dynamics}
 
-Because mathematical stability concerning complex generalized lattice formulations possesses limited multi-decade chronological precedence, NIST formally endorses \textit{Hybrid Frameworks} executing sequential classical and post-quantum payloads concatenated utilizing robust Key Derivation Functions (KDFs). Running both ECDH-P256 and ML-KEM simultaneously creates a massive bottleneck. The dual setup drives a 200\% spike in computational load. It also heavily fragments the network transmissions. Ultimately, this demanding hybrid approach fails on constrained C1 hardware.
+Lattice-based assumptions lack the multi-decade track record of RSA or ECC, so NIST recommends hybrid schemes that run classical and post-quantum key exchanges in parallel, concatenating both shared secrets through a KDF. The cost is steep. Table \ref{tab:hybrid_overhead} quantifies it: ECDHE + ML-KEM-512 takes 9.4 ms and 16.5 KB RAM on Class 2, roughly $2.2\times$ the pure classical baseline. Adding ML-DSA for authentication pushes RAM to 55.4 KB — already exceeding the Class 1 ceiling. Hybrid modes are viable only on Class 2 hardware with Ethernet-class MTUs ($\geq$ 1500 bytes); on 802.15.4 links, the combined 1,632-byte KEM payload alone demands 20 MAC-layer frames.
 
 \begin{algorithm}[htbp]
 \caption{Standardized Hybrid ECDHE + ML-KEM Exchange}

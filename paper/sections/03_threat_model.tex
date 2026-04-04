@@ -7,13 +7,13 @@ To contextualize the urgency and scope of IoT migration towards post-quantum sta
 
 \subsection{Quantum Adversarial Model}
 
-Our adversary, $\mathcal{A}_{\text{CRQC}}$, is defined as a non-local, passive and active networked entity possessing full intercept, alter, and rerouting capabilities corresponding to the standard Dolev-Yao threat model applied over long-range IoT transmission spectrums (e.g., LoRaWAN, NB-IoT, or wide-area Wi-Fi).
+We adopt the standard Dolev-Yao model: the adversary $\mathcal{A}_{\text{CRQC}}$ can intercept, modify, and reroute any message on the IoT transmission medium (LoRaWAN, NB-IoT, Wi-Fi, or DSRC). This is unchanged from classical threat modeling.
 
-Crucially, $\mathcal{A}_{\text{CRQC}}$ possesses computational access to a cryptographically relevant quantum computer executing a hybridized combination of Grover's Algorithm \cite{grover1996fast} targeting symmetric collisions and Shor's Algorithm \cite{shor1994algorithms} targeting Abelian hidden subgroup problems spanning integer factorization and elliptic curve discrete logarithms. We assume $\mathcal{A}_{\text{CRQC}}$ possesses sufficient stable logical qubits required to execute arbitrary-depth quantum circuitry to breach NIST Security Category 1 ($\geq$ 128-bit classical equivalent) systems instantly.
+What changes is computational power. $\mathcal{A}_{\text{CRQC}}$ has access to a cryptographically relevant quantum computer — one capable of running Shor's algorithm \cite{shor1994algorithms} against RSA/ECC key exchanges and Grover's algorithm \cite{grover1996fast} to halve the effective security of symmetric ciphers. We assume enough stable logical qubits to break any NIST Security Category 1 system ($\geq$ 128-bit classical equivalent) outright. Whether such a machine exists today is beside the point; the threat model must account for it because IoT firmware deployed now will still be running in 2040.
 
 \subsection{The "Harvest Now, Decrypt Later" Immediacy}
 
-Unlike physical infrastructure attacks, cryptographic breaches traverse time. IoT traffic streams---such as digitized medical telemetry logs or encrypted municipal grid commands---are captured indiscriminately as bulk ciphertexts today. Because the long-term confidentiality thresholds of these records frequently exceed 25 years, the retroactive exposure hazard effectively demands present-day PQC adoption regardless of immediate commercial quantum availability metrics.
+A stolen RSA-encrypted packet is not just a breach today — it is a breach whenever a quantum computer arrives. Nation-state actors are already archiving bulk TLS traffic from IoT networks: medical telemetry, smart grid commands, industrial SCADA streams. If those records need to stay confidential for 25 years, and a fault-tolerant quantum computer appears within that window, every archived session is retroactively compromised. This "harvest now, decrypt later" timeline is what makes PQC migration urgent even before commercial quantum hardware matures.
 
 \subsection{Side-Channel Vulnerabilities}
 

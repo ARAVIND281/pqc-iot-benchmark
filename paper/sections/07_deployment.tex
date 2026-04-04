@@ -7,7 +7,7 @@ Below, we translate the TOPSIS rankings and feasibility matrices into deployment
 
 \subsection{Mitigating the Class 0 Infeasibility Problem}
 
-Class 0 endpoints (e.g., disposable biometric sensors) lack execution stacks supporting substantial \dilithium{} operations. Practical interventions necessitate \textbf{Gateway Crypto-Delegation architectures} transmitting symmetric endpoints terminating securely at heavily guarded edge servers directly processing standardized PQC. Furthermore, symmetrical key rotation routines executed rapidly via AES-GCM bypass immense KEM structural bounds indefinitely pending future advanced optimized hyper-lightweight PQC standardizations.
+No PQC algorithm fits in 10 KB of RAM. Class 0 devices — disposable skin-patch sensors, simple environmental motes — cannot run ML-KEM or any signature scheme directly. The only viable architecture is gateway delegation: the sensor encrypts telemetry with a pre-shared AES-256-GCM key and forwards it to a Class 2+ gateway, which handles the PQC handshake with the backend server (Algorithm 8). Key rotation happens over the symmetric channel. This sidesteps the KEM memory problem entirely, at the cost of trusting the gateway.
 
 \begin{algorithm}[htbp]
 \caption{Class 0 Gateway Crypto-Delegation Protocol}

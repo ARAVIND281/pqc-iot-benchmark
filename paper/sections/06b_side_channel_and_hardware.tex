@@ -6,9 +6,9 @@
 Migrating IoT nodes from computationally trivial ECC logic loops towards thousands of modular additions exposes embedded hardware to an entirely new vertical of physical side-channel leakages.
 
 \subsection{Differential Power Analysis (DPA)}
-Microcontrollers physicalized on PCBs naturally generate electromagnetic emissions and power fluctuations directly correlated to the instantaneous binary operations executed by the ALU. DPA leverages substantial trace arrays captured via oscilloscopes to isolate secret intermediate values. 
+Every instruction a microcontroller executes leaks information through its power rail. DPA exploits this: an attacker records thousands of power traces during ML-KEM encapsulations, then statistically correlates voltage fluctuations with candidate values of the secret error polynomial $\mathbf{e}$.
 
-In ML-KEM encapsulation, the secret generation of the error polynomial $\mathbf{e}$ relies heavily on symmetric hash primitives (SHAKE). Adversaries targeting the highly deterministic memory buses of ARM architectures can correlate specific voltage drops occurring exactly during AES or Keccak register permutation states to extract the seed derivations forming the lattice noise, thereby entirely bypassing the mathematical LWE assumption.
+The attack surface is concentrated in SHAKE/Keccak, which generates $\mathbf{e}$ from a seed. On ARM Cortex-M4, the Keccak permutation's register-level state transitions produce measurable voltage dips that correlate with specific seed bits. A successful extraction of the seed bypasses the LWE hardness assumption entirely — the attacker reconstructs $\mathbf{e}$ and recovers the shared secret without solving any lattice problem.
 
 \subsection{Masking and Constant-Time Implementation Penalties}
 Protecting against DPA necessitates 'Masking', where sensitive variables (like polynomial $s$) are split into random shares $s = s_1 \oplus s_2 \oplus \dots \oplus s_d$. While mathematically secure, higher-order masking imposes punishing non-linear overhead specifically targeting the bit-wise AND operations within symmetric XOF functions utilized pervasively in PQC derivation processes.

@@ -3,7 +3,7 @@
 \label{sec:visualizations}
 %-----------------------------------------------------------------------
 
-To provide a granular understanding surpassing standard tabular summations, we generated 14 unique high-resolution data visualizations utilizing our Python pipeline computing over 45,000 distinct benchmark traces.
+Tables report averages; distributions tell the real story. We generated 14 visualizations from the full 45,000-trace dataset to expose variance, correlation structure, and Pareto boundaries that summary statistics obscure.
 
 \subsection{KEM Operation Scaling (Encapsulation and Decapsulation)}
 
@@ -27,7 +27,7 @@ As exhibited in Figures \ref{fig:encaps} and \ref{fig:decaps}, lattice-based KEM
 
 \subsection{Variance and Execution Consistency}
 
-IoT environmental constraints frequently induce substantial stochastic operating system jitter. Figure 10 maps the execution timing variances using box plots.
+OS-level jitter is unavoidable on non-bare-metal platforms, and its magnitude depends on the algorithm's memory footprint. Figure 10 shows the effect clearly through box plots of execution time.
 
 \begin{figure*}[htbp]
 \centering
@@ -36,7 +36,7 @@ IoT environmental constraints frequently induce substantial stochastic operating
 \label{fig:boxplot}
 \end{figure*}
 
-This paper found that memory-heavy algorithms produce wider interquartile ranges (IQR). These heavy memory demands cause long-tail latency events. Specifically, the CPU stalls when it hits flash-memory page boundaries or triggers garbage collection. These unpredictable delays cause industrial sensors to fail their strict Real-Time Operating System (RTOS) deadlines.
+The pattern: algorithms that push closer to the RAM ceiling produce wider IQRs and longer tails. ML-DSA-5 on Class 1 hardware, for instance, exhibits outlier runs exceeding 3$\times$ its median — likely caused by the kernel reclaiming pages when the heap nears the 50 KB limit. For any sensor bound to RTOS deadlines (e.g., a 100 ms polling cycle), these tail events are the real constraint, not the median.
 
 \subsection{Correlation Matrices and Radar Fingerprints}
 
@@ -49,7 +49,7 @@ To analytically prove the independence of our target variables (Energy vs Memory
 \label{fig:correlation}
 \end{figure}
 
-Unsurprisingly, Energy Consumption ($E_{total}$) maps with a nearly perfect $+0.98$ correlation to Execution Latency, validating our $E_{cpu}$ calculation model. However, Key Size possesses a dramatically lower $+0.42$ linkage to CPU Energy, proving that radio transmissions and calculation times interact as independent resource vectors. 
+Figure \ref{fig:correlation} reports the Pearson correlation matrix across all measured attributes. Energy and execution time correlate at +0.98 — expected, since $E_{cpu}$ is directly proportional to active cycles. The more informative finding is the weak link between public key size and CPU energy (+0.42). This confirms that computation cost and transmission cost are largely independent: an algorithm can be fast to compute but expensive to transmit (FN-DSA), or cheap to send but slow to execute (SLH-DSA).
 
 \begin{figure*}[htbp]
 \centering
@@ -58,11 +58,11 @@ Unsurprisingly, Energy Consumption ($E_{total}$) maps with a nearly perfect $+0.
 \label{fig:radar}
 \end{figure*}
 
-Figure \ref{fig:radar} isolates these vectors via localized radar projections. \falcon{} mathematically minimizes Key Sizes and validation paths but vastly over-consumes local computational limits. Conversely, \sphincs{} mathematically guarantees the smallest Key Sizes on generation while severely penalizing transmission boundaries.
+The radar charts in Figure \ref{fig:radar} make this trade-off visual. FN-DSA-512 collapses the signature-size and verification-time axes to near-zero, but its key-generation axis stretches far beyond every competitor. SLH-DSA-128f shows the opposite shape: a 32-byte public key (the smallest in the set) paired with a 17 KB signature and a 1,110 ms signing time.
 
 \subsection{Latency Cumulative Distribution}
 
-Instead of arbitrarily defining "Average" execution parameters, Figure \ref{fig:cdf} documents empirical latency paths globally utilizing Cumulative Probability Density tracking. 
+Averages hide tail risk. Figure \ref{fig:cdf} plots the cumulative distribution of execution times across all 45,000 traces.
 
 \begin{figure}[htbp]
 \centering
@@ -71,11 +71,11 @@ Instead of arbitrarily defining "Average" execution parameters, Figure \ref{fig:
 \label{fig:cdf}
 \end{figure}
 
-We analytically determine that 95\% ($\alpha = 0.05$) of all \kyber{}-512 traces globally terminate beneath 8 milliseconds unconditionally, generating mathematical guarantees necessary for high-frequency IoT polling architectures.
+The practical takeaway: 95\% of ML-KEM-512 runs finish in under 8 ms, across all device classes. That 8 ms ceiling is what matters for a sensor polling at 10 Hz — it guarantees the crypto never becomes the bottleneck. SLH-DSA-128f, by contrast, does not reach its 95th percentile until well past 1,000 ms, ruling it out for any real-time application.
 
 \subsection{Security Level vs Resource Pareto Frontier}
 
-The quintessential dilemma facing IoT network architects globally is identifying the exact mathematical trade-off curve between NIST Category scaling (Level 1 $\rightarrow$ 5) versus physical battery drainage.
+Every step up in NIST security level costs resources. The question is how steeply. Figure \ref{fig:pareto} plots resource drain (log scale) against security level for each algorithm and device class, revealing the Pareto frontier.
 
 \begin{figure*}[htbp]
 \centering
@@ -84,7 +84,7 @@ The quintessential dilemma facing IoT network architects globally is identifying
 \label{fig:pareto}
 \end{figure*}
 
-Figure \ref{fig:pareto} unambiguously highlights the optimal deployment boundary. Algorithms falling along the Pareto optimal curve (\kyber{}-512, \falcon{}-512) maximize cryptographic resistance while utilizing physically minimal resources globally. Algorithms pushed violently rightward (e.g., \sphincs{}-256) offer theoretical absolute security while requiring physically untenable resource footprints triggering operational failures.
+ML-KEM-512 and FN-DSA-512 (with hardware FPU) sit on or near the Pareto curve at Level 1: they deliver 128-bit post-quantum security at the lowest combined cost. Moving to Level 3, ML-KEM-768 stays close to the frontier — a 1.45$\times$ timing increase and 1.50$\times$ memory increase over ML-KEM-512 (Table IX). SLH-DSA variants, by contrast, land orders of magnitude above the frontier at every security level, pushed there by their hash-tree signing cost.
 
 \subsection{Execution vs Bandwidth Tradeoffs}
 
