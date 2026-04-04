@@ -1,0 +1,75 @@
+%-----------------------------------------------------------------------
+\section{End-to-End System Workflow}
+\label{sec:system_workflow}
+%-----------------------------------------------------------------------
+
+To fully visualize how the cryptographic primitives map through our simulated environments and culminate in analytical decisions, Figure~\ref{fig:workflow_map} illustrates the end-to-end framework topology.
+
+\begin{figure*}[htbp]
+\centering
+\resizebox{0.95\textwidth}{!}{
+\begin{tikzpicture}[
+    node distance=1.5cm and 2cm, 
+    >=Stealth,
+    base/.style={rectangle, rounded corners=3pt, thick, draw, text centered, text width=3.5cm, minimum height=1.6cm, font=\small},
+    phase1/.style={base, fill=blue!10, draw=blue!80!black},
+    phase2/.style={base, fill=emerald!10, draw=green!60!black}, % Use basic green to avoid color package missing emerald
+    phase3/.style={base, fill=orange!10, draw=orange!80!black},
+    phase4/.style={base, fill=purple!10, draw=purple!80!black},
+    phase5/.style={base, rounded corners=10pt, fill=gray!15, draw=black!80},
+    bgbox/.style={rectangle, rounded corners=5pt, draw=black!50, dashed, inner sep=15pt, fill=black!2}
+]
+
+% --- Nodes ---
+% Phase 1
+\node (pool) [phase1] {\textbf{1. Algorithm Pool}\\ \vspace{1mm} \scriptsize ML-KEM, ML-DSA\\SLH-DSA, FN-DSA, NTRU};
+\node (source) [below=0.4cm of pool, font=\scriptsize, text width=3.5cm, align=center] {Cortex-M4 Cycle Counts \& \texttt{liboqs} bindings};
+\draw [->, dashed, thick, blue!80] (source) -- (pool);
+
+% Phase 2
+\node (classes) [base, fill=green!10, draw=green!60!black, right=of pool] {\textbf{2. IoT Constraints}\\ \vspace{1mm} \scriptsize Class 0 (10KB / 16MHz)\\ Class 1 (50KB / 48MHz)\\ Class 2 (250KB / 120MHz)};
+\node (rlimit) [below=0.4cm of classes, font=\scriptsize, text width=3.5cm, align=center] {Kernel \texttt{setrlimit()}\\ enforcing rigid RSS boundaries};
+\draw [->, dashed, thick, green!70!black] (rlimit) -- (classes);
+
+% Phase 3
+\node (bench) [phase3, right=of classes] {\textbf{3. Benchmarking Engine}\\ \vspace{1mm} \scriptsize $1000$ Iterations per Alg.\\ Time, Mem, Energy Profiler};
+\node (ops) [below=0.4cm of bench, font=\scriptsize, text width=3.5cm, align=center] {KeyGen, Encapsulate/Sign, Decapsulate/Verify};
+\draw [->, dashed, thick, orange!80!black] (ops) -- (bench);
+
+% Phase 4
+\node (stats) [phase4, right=of bench] {\textbf{4. Statistical Mechanics}\\ \vspace{1mm} \scriptsize Unsupervised IQR Clean\\ 1-way ANOVA\\ Pearson Correlation};
+\node (traces) [below=0.4cm of stats, font=\scriptsize, text width=3.5cm, align=center] {45,000 empirical execution traces};
+\draw [->, dashed, thick, purple!80!black] (traces) -- (stats);
+
+% Phase 5
+\node (topsis) [phase5, right=of stats] {\textbf{5. Output Mapping}\\ \vspace{1mm} \scriptsize TOPSIS Decision Matrix \&\\ Feasibility Classification};
+
+% --- Background Grouping (Requires backgrounds library) ---
+\begin{scope}[on background layer]
+    \node[bgbox, fit=(pool) (source)] (box1) {};
+    \node[above=2pt of box1, font=\bfseries\small, text=black!70] {Phase I: Inputs};
+
+    \node[bgbox, fit=(classes) (rlimit)] (box2) {};
+    \node[above=2pt of box2, font=\bfseries\small, text=black!70] {Phase II: Emulation};
+
+    \node[bgbox, fit=(bench) (ops)] (box3) {};
+    \node[above=2pt of box3, font=\bfseries\small, text=black!70] {Phase III: Empirical Engine};
+
+    \node[bgbox, fit=(stats) (traces)] (box4) {};
+    \node[above=2pt of box4, font=\bfseries\small, text=black!70] {Phase IV: Analytics};
+    
+    \node[bgbox, fit=(topsis)] (box5) {};
+    \node[above=2pt of box5, font=\bfseries\small, text=black!70] {Phase V: Synthesis};
+\end{scope}
+
+% --- Edges ---
+\draw [->, ultra thick] (box1.east) -- (box2.west);
+\draw [->, ultra thick] (box2.east) -- (box3.west);
+\draw [->, ultra thick] (box3.east) -- (box4.west) node[midway, above=-0.1cm, font=\scriptsize] {\texttt{.csv}};
+\draw [->, ultra thick] (box4.east) -- (box5.west);
+
+\end{tikzpicture}
+}
+\caption{Comprehensive End-to-End PQC Benchmarking Architecture Map. This diagram visualizes the flow beginning from algorithmic primitive selection, through hardware emulation environments enforcing rigid memory ceilings, passing empirical data matrices down the pipeline into rigorous statistical ANOVA evaluation frameworks, and culminating in quantitative TOPSIS multi-criteria decision matrices.}
+\label{fig:workflow_map}
+\end{figure*}
