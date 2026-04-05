@@ -102,7 +102,7 @@ def fig1_framework_architecture():
         {'x': 7.7, 'y': 2.5, 'w': 1.8, 'h': 1, 'text': 'Figures', 'color': colors['process']},
         
         # Output layer
-        {'x': 2.5, 'y': 0.5, 'w': 5, 'h': 1, 'text': 'IEEE Paper (8-12 pages)\nTables + Figures + Analysis', 'color': colors['output']}
+        {'x': 2.5, 'y': 0.5, 'w': 5, 'h': 1, 'text': 'Final Manuscript Output\n(Empirical Results & Analysis)', 'color': colors['output']}
     ]
     
     for box in boxes:
@@ -132,9 +132,6 @@ def fig1_framework_architecture():
     for x in [1.6, 4.0, 6.4, 8.6]:
         ax.annotate('', xy=(5, 1.5), xytext=(x, 2.5),
                    arrowprops=arrow_props)
-    
-    ax.set_title('Comprehensive PQC Evaluation Testbed Framework. The architecture spans from bare-metal \\ncode execution through OS-level kernel isolations ultimately concluding within \\nhigh-level statistical modeling engines uniformly.',
-                fontsize=11, fontweight='bold', pad=20)
     
     plt.tight_layout()
     plt.savefig(FIGURE_FILES['fig1_framework'], dpi=FIGURE_DPI, bbox_inches='tight')
